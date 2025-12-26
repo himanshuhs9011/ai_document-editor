@@ -1,0 +1,50 @@
+{
+  "model_name": "gemma3:latest",
+  "embedding_model": "nomic-embed-text:latest",
+  "model_settings": {
+    "temperature": 0.5,
+    "num_predict": 2048,
+    "timeout": 300,
+    "num_retry": 2,
+    "base_url": "http://localhost:11434"
+  },
+  "available_models": [
+    "gemma3:latest",
+    "qwen2.5:32b",
+    "llama3.2:latest",
+    "codellama:latest",
+    "mistral:latest",
+    "neural-chat:latest"
+  ],
+  "available_embedding_models": [
+    "nomic-embed-text:latest",
+    "mxbai-embed-large:latest",
+    "all-minilm:latest"
+  ],
+  "model_descriptions": {
+    "gemma3:latest": "Google's Gemma 3 - Fast and efficient for general tasks",
+    "qwen2.5:32b": "Qwen 2.5 32B - Large model for complex reasoning",
+    "llama3.2:latest": "Meta's Llama 3.2 - Balanced performance",
+    "codellama:latest": "Code-specialized Llama for programming tasks",
+    "mistral:latest": "Mistral AI model - Good for instruction following",
+    "neural-chat:latest": "Intel's Neural Chat - Optimized for conversations"
+  },
+  "embedding_descriptions": {
+    "nomic-embed-text:latest": "Nomic Embed - High quality text embeddings (768 dim)",
+    "mxbai-embed-large:latest": "MixedBread Embed - Large embeddings (1024 dim)",
+    "all-minilm:latest": "All-MiniLM - Fast, lightweight embeddings (384 dim)"
+  },
+  "instructions": {
+    "change_model": [
+      "1. Edit this file (model-config.json)",
+      "2. Change 'model_name' for chat or 'embedding_model' for embeddings",
+      "3. Pull the model: ollama pull <model-name>",
+      "4. Restart the backend server"
+    ],
+    "example": {
+      "model_name": "qwen2.5:32b",
+      "embedding_model": "mxbai-embed-large:latest",
+      "reason": "For more complex document analysis tasks"
+    }
+  }
+}
