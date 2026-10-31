@@ -1,0 +1,121 @@
+// Database tables. Prisma builds and migrates them; the Python API queries them with asyncpg.
+
+// DATABASE_URL may be a pooled connection (Neon "-pooler" host); migrations need the direct one in DIRECT_URL.
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String    @id
+  email         String    @unique
+  username      String    @unique
+  fullName      String?   @map("full_name")
+  passwordHash  String    @map("password_hash")
+  isActive      Boolean   @default(true) @map("is_active")
+  plan          String    @default("free")
+  planExpiresAt DateTime? @map("plan_expires_at") @db.Timestamptz
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  sessions  Session[]
+  documents Document[]
+  apiKeys   ApiKey[]
+  aiUsage   AiUsage[]
+
+  @@map("users")
+}
+
+model Session {
+  id         String    @id
+  userId     String    @map("user_id")
+  name       String
+  documentId String?   @map("document_id")
+  metadata   Json      @default("{}")
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  document Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  messages Message[]
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Message {
+  id        String   @id
+  sessionId String   @map("session_id")
+  role      String
+  content   String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+  @@map("messages")
+}
+
+model Document {
+  id            String   @id
+  userId        String   @map("user_id")
+  filename      String
+  fileType      String   @map("file_type")
+  pageCount     Int      @default(1) @map("page_count")
+  text          String   @default("")
+  html          String?
+  metadata      Json     @default("{}")
+  indexedHash   String?  @map("indexed_hash")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions Session[]
+  chunks   DocumentChunk[]
+
+  @@index([userId])
+  @@map("documents")
+}
+
+model DocumentChunk {
+  id         String                 @id
+  documentId String                 @map("document_id")
+  chunkIndex Int                    @map("chunk_index")
+  content    String
+  model      String
+  embedding  Unsupported("vector")
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@map("document_chunks")
+}
+
+model ApiKey {
+  id           String   @id
+  userId       String   @map("user_id")
+  provider     String
+  model        String
+  baseUrl      String?  @map("base_url")
+  encryptedKey String   @map("encrypted_key")
+  keyHint      String   @map("key_hint")
+  isActive     Boolean  @default(false) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@map("api_keys")
+}
+
+model AiUsage {
+  userId String   @map("user_id")
+  day    DateTime @db.Date
+  count  Int      @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, day])
+  @@map("ai_usage")
+}

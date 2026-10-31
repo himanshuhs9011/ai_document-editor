@@ -99,3 +99,10 @@ logs/
 .coverage
 htmlcov/
 .pytest_cache/
+
+# Desktop app (Electron) dependencies and built installers
+desktop/node_modules/
+desktop/release/
+
+# Production secrets for deployment (filled in by hand, never committed)
+deploy/secrets.env

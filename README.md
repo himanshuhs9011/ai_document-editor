@@ -1,6 +1,6 @@
 # 🤖 AI Document Editor
 
-A powerful offline AI-powered document editor with chat integration, built with React, FastAPI, and local LLM support via Ollama.
+An AI-powered document editor: a Word-style editor with an AI assistant that writes and edits documents, answers questions about uploaded files (RAG), and lets every user bring their own model API key.
 
 ![AI Document Editor Interface](app-screenshot.png)
 
@@ -8,168 +8,171 @@ A powerful offline AI-powered document editor with chat integration, built with 
 
 ## ✨ Features
 
-- 📄 **Document Upload** - Support for PDF, DOCX, TXT files
-- 🤖 **AI Chat Assistant** - Interactive AI for document editing & creation
-- 📝 **Rich Text Editor** - Full-featured document editing
-- 🔍 **Semantic Search** - Find relevant content using embeddings
-- 💾 **Session Management** - Auto-save and restore conversations
-- 📤 **Export** - Download as PDF or DOCX
-- 🌙 **Dark Mode** - Beautiful dark/light themes
-- 🔒 **100% Offline** - All AI processing happens locally
+- 📝 **Word-style Home ribbon**: clipboard and Format Painter; fonts, sizes, grow/shrink, change case, sub/superscript, highlight and font color; bullets, numbering styles, indent, sort, line spacing, shading, paragraph marks; style gallery; Find & Replace; select sentence/paragraph; dictation; spell check
+- 🤖 **AI chat that streams** its answers; questions are answered in the chat, edit requests come back as **suggested changes you accept or reject** paragraph by paragraph (unchanged text keeps its formatting; one undo reverts)
+- ⚡ **Inline AI**: type `/` for AI commands (continue writing, improve, fix grammar, shorter/longer, formal, `/translate hindi`, `/table …`, `/ask …`) and quick blocks; optional **autocomplete** ghost text (Tab to accept)
+- 🧭 **Studio**: pick a profession and its team of specialist agents writes the whole document. A lead editor plans it, specialists draft each section, reviewers check it, and flagged sections are revised. Professions: legal, medical, reports, research, news, articles and features, social media, film and TV, YouTube, reels and shorts, and courses (11 playbooks, 66 specialists and reviewers)
+- 🔍 **Search across all your documents** (RAG on pgvector) with clickable cited sources; falls back to keyword ranking when no embedding model is reachable
+- 📚 **Deep read** for long documents: instead of a few retrieved snippets, the model explores the whole text with code in a sandbox and hands pieces to helper models (recursive language model reading), for summaries, "list every…" questions and comparisons. The answer shows the code it ran
+- 📄 **Upload** PDF (with OCR for scans), DOCX and TXT · 📤 **Export** to DOCX
+- 🔑 **Bring your own key**: OpenAI, Anthropic, Gemini, Groq, Mistral, DeepSeek, OpenRouter, xAI, Together, or any OpenAI-compatible API
+- 💳 **Paywall**: editing is free; AI uses your own key, the free daily allowance, or Pro
+- 👤 Accounts, per-user sessions, autosave, dark mode
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Run locally (Windows)
 
-### 1️⃣ Install Ollama
-
-Download and install Ollama from: https://ollama.ai/download
-
-### 2️⃣ Pull the AI Models
+You need **Python 3.10+**, **Node.js 18+**, **Docker Desktop**, and **[Ollama](https://ollama.ai/download)** for the free local model.
 
 ```bash
-# Chat model
 ollama pull gemma3:latest
-
-# Embedding model (for semantic search)
 ollama pull nomic-embed-text:latest
 ```
 
-### 3️⃣ Start the Application
-
-**Windows - Choose one:**
-
-| Script | Use Case |
-|--------|----------|
-| `start-portable.bat` | 🖥️ **Local only** - Access from this computer |
-| `start-lan.bat` | 📱 **LAN access** - Share with phone/other devices on WiFi |
+Then start everything (open **http://localhost:3000** and register an account):
 
 ```bash
-# For local use only
-start-portable.bat
-
-# For LAN/WiFi access  
-start-lan.bat
+docker compose up -d                          # Postgres (pgvector) + Redis
+cd backend && npm install && npm run db:deploy   # build/migrate tables with Prisma
+python main.py                                 # API on http://localhost:8000 (docs at /docs)
+cd ../frontend && npm install && npm run dev   # app on http://localhost:3000
 ```
 
-### 4️⃣ Open in Browser
+Coming from the old SQLite version? Copy your users, sessions and messages over once:
 
-- **App**: http://localhost:3000
-- **API Docs**: http://localhost:8000/docs
-
-**Default Login:**
-- Email: `admin@localhost`
-- Password: `admin123`
-
----
-
-## 📜 Startup Scripts Explained
-
-### `start-portable.bat` - Local Mode
-- ✅ Creates virtual environment (`.venv`) if missing
-- ✅ Installs Python dependencies from `requirements.txt`
-- ✅ Installs frontend dependencies (`npm install`)
-- ✅ Starts backend on `localhost:8000`
-- ✅ Starts frontend on `localhost:3000`
-- ✅ Checks if Ollama is running
-- 🔒 **Access**: Only from this computer
-
-### `start-lan.bat` - LAN/WiFi Access Mode
-- ✅ All features of portable mode, **PLUS:**
-- ✅ Detects your local IP address automatically
-- ✅ Starts frontend with `--host` flag (exposes to network)
-- 📱 **Access**: From any device on the same WiFi network
-- 🔗 **Share URL**: `http://YOUR_IP:3000`
-
-**Example LAN Access:**
-```
-Your Local IP Address: 192.168.1.100
-
-Share these URLs with others on your WiFi:
-  Phone/Tablet: http://192.168.1.100:3000
-  This computer: http://localhost:3000
+```bash
+cd backend && python scripts/import_sqlite.py data/sessions.db
 ```
 
 ---
 
-## 🧠 Model Configuration
+## 🖥️ Desktop app (Windows installer)
 
-All AI model settings are in **`model-config.json`**:
+`desktop/` wraps the website in a small Electron app so people can install it like any Windows program. It opens your
+deployed site in its own window, so app updates reach desktop users as soon as you deploy, with no new installer.
+Editing works for everyone who signs in; AI uses the same free daily allowance, own API key or Pro as the website.
 
-```json
-{
-  "model_name": "gemma3:latest",
-  "embedding_model": "nomic-embed-text:latest",
-  "model_settings": {
-    "temperature": 0.5,
-    "num_predict": 2048,
-    "timeout": 300,
-    "base_url": "http://localhost:11434"
-  }
-}
-```
+1. Put your deployed site's address in `desktop/app.config.json` (use the `https://` address).
+2. `cd desktop && npm install && npm run dist`
+3. The installer and a portable `.exe` appear in `desktop/release/`.
 
-### Changing Models
+To try it against your local dev server first: `cd desktop && npm start` (it opens `http://localhost:3000`). Run it from
+a normal terminal: VS Code's terminal sets `ELECTRON_RUN_AS_NODE`, which makes Electron start as plain Node.js.
 
-1. Edit `model-config.json`
-2. Change `model_name` (chat) or `embedding_model` (search)
-3. Pull the new model: `ollama pull <model-name>`
-4. Restart the backend
+GitHub can build it for you: set the repository variable `APP_URL` (Settings → Secrets and variables → Actions →
+Variables), then push a tag like `v1.0.0`. `.github/workflows/desktop.yml` builds the installer and attaches it to a
+GitHub Release. The installer is unsigned, so Windows shows an "unknown publisher" warning until you add a code-signing
+certificate. The window is locked down: the page has no access to the computer, other sites open in the normal browser,
+and only your site may use the microphone and clipboard.
 
-**Recommended Chat Models:**
+## 🌍 Deploying online
 
-| Model | Size | Best For |
-|-------|------|----------|
-| `gemma3:latest` | ~5GB | General use (default) |
-| `llama3.2:latest` | ~2GB | Fast responses |
-| `qwen2.5:32b` | ~20GB | Complex reasoning |
-| `codellama:latest` | ~4GB | Programming tasks |
+| Piece | Suggested service | Notes |
+|-------|-------------------|-------|
+| API (agents) | Google Cloud Run, Fly.io or Render | `backend/Dockerfile`; scales to zero when idle |
+| Database | Neon (or Supabase) Postgres | `DATABASE_URL` = pooled string, `DIRECT_URL` = direct string (for migrations) |
+| Redis | Upstash | rate limits and caches; optional |
+| Frontend | Cloudflare Pages, Vercel or Netlify | `npm run build`, serve `frontend/dist` |
 
-**Recommended Embedding Models:**
-
-| Model | Dimensions | Best For |
-|-------|------------|----------|
-| `nomic-embed-text:latest` | 768 | High quality (default) |
-| `mxbai-embed-large:latest` | 1024 | Large embeddings |
-| `all-minilm:latest` | 384 | Fast, lightweight |
+1. Build the API image from the repo root: `docker build -f backend/Dockerfile .`
+2. Set the environment variables below as secrets on the API service.
+3. Apply migrations from your machine or CI: `cd backend && DATABASE_URL=... npm run db:deploy`
+4. Build the frontend with `VITE_API_URL=https://your-api.example.com` and set `CORS_ORIGINS` on the API to the frontend's URL.
+5. Set `TRUSTED_PROXY_HOPS=1` on Cloud Run, Render or Fly so login rate limits see each visitor's real address.
 
 ---
 
-## 📁 Project Structure
+## ⚙️ Configuration
 
+Copy `backend/.env.example` to `backend/.env`. The important variables:
+
+| Variable | Purpose |
+|----------|---------|
+| `SECRET_KEY` | Signs login tokens. Generate with `python backend/scripts/generate_secret_key.py` |
+| `ENCRYPTION_KEY` | Encrypts users' saved API keys (set it in production) |
+| `DATABASE_URL` / `REDIS_URL` | Postgres and Redis connections |
+| `LLM_PROVIDER`, `LLM_MODEL`, `LLM_BASE_URL`, `LLM_API_KEY` | The server's own model (default: local Ollama) |
+| `EMBEDDING_*` | Embedding model for document search |
+| `FREE_AI_DAILY_LIMIT` / `PRO_AI_DAILY_LIMIT` | AI requests per day on the server model |
+| `CORS_ORIGINS` | Frontend URLs allowed to call the API |
+| `TRUSTED_PROXY_HOPS` | Proxies in front of the API (1 on Cloud Run, Render, Fly; 0 locally) |
+
+Locally, `model-config.json` still sets the default Ollama model names.
+
+### Paywall and API keys
+
+- Editing, upload and export are free for everyone.
+- AI requests run on the user's **own API key** when they've added one under **AI & Plan** (no limit), otherwise on the server model within the plan's daily limit (free: 10, Pro: 500 by default). Each report section counts as one request.
+- Autocomplete fires while you type, so it needs the user's own key or Pro.
+- Grant Pro by hand until a payment provider is connected: `python backend/scripts/set_plan.py user@example.com pro 30`
+
+### Deep read (recursive reading)
+
+Chat has two modes. **Quick** answers from the most relevant passages (RAG) plus the start of the document: one AI request.
+**Deep read** (`backend/src/agents/rlm/`) gives the model the whole text as a variable in a sandbox. It writes code to look
+around (`grep`, slices, `chunks`), sends pieces to helper models with `llm_query` / `llm_query_batch`, and replies with
+`FINAL(answer)`. Texts under about 24,000 characters skip the loop and are read in one pass. Each model call after the first
+counts as one AI request (at most 8 steps and 24 helper reads per question), free with the user's own key.
+
+The sandbox (`sandbox.py`) never calls `exec` or `eval`: it parses the code, checks every node against an allow-list, and
+interprets it itself. No imports, no `def`/`lambda`/`class`, no underscore names, methods only on plain strings, lists and
+dicts; steps, value sizes, output, compute time (5 s per step) and helper calls are capped, and it yields to other requests
+while it runs. `tests/test_rlm.py` tries the known escapes and resource attacks against it.
+
+### Studio playbooks
+
+Each profession is one file in `backend/src/agents/harness/playbooks/`: its document types, the questions its brief asks,
+its specialists (each with a method), its reviewers (each with checks), its style and its safety rules. The harness in
+`engine.py` runs any playbook the same way, so adding a profession means adding one file and listing it in
+`playbooks/__init__.py`. A quick run costs one AI request per section plus the plan; "draft, review and revise" adds one per
+reviewer and one per revised section.
+
+### Tests
+
+```bash
+cd backend && python -m unittest discover -s tests -t .
 ```
-AI_Document_Editor/
-├── backend/               # FastAPI server
-│   ├── main.py           # Entry point
-│   ├── src/              # Source code
-│   │   ├── services/     # LLM, Vector, Document services
-│   │   ├── routes/       # API endpoints
-│   │   └── core/         # Configuration (model defaults here)
-│   └── data/             # User data (ignored by git)
-├── frontend/              # React app
-│   ├── src/              # Components & pages
-│   └── package.json
-├── start-portable.bat     # 🖥️ Start for local use
-├── start-lan.bat          # 📱 Start for LAN/WiFi access
-├── model-config.json      # ⭐ AI model settings
-└── .env.example           # Environment template
-```
+
+They need no database or model server, and cover the security fixes (DOCX export cannot read server files or internal
+URLs, upload size limits, custom provider URLs, the rate-limit client address), the harness's parsing and playbooks, and
+the deep-read sandbox (escape attempts, resource limits) and reading loop.
+
+### Database changes
+
+Tables are defined in `backend/prisma/schema.prisma`. After editing it run `npm run db:migrate` in `backend/` to create a migration, and update the matching queries in `backend/src/db/`.
 
 ---
 
-## ⚙️ Environment Setup
+## 📁 Project structure
 
-1. Copy the example environment file:
-   ```bash
-   cp backend/.env.example backend/.env
-   ```
-
-2. Generate a new secret key:
-   ```bash
-   python -c "import secrets; print(secrets.token_urlsafe(32))"
-   ```
-
-3. Update `backend/.env` with your new secret key
+```
+backend/
+  main.py                 app startup and routes
+  prisma/                 schema.prisma + migrations (tables are built by Prisma)
+  src/
+    config.py             settings from environment variables
+    deps.py               login, per-request model choice, rate limits
+    cache.py              Redis (or in-memory) cache and rate limiter
+    db/                   one file of SQL queries per table (asyncpg)
+    routes/               auth, chat, documents, sessions, keys, billing, health
+    services/             chat pipeline (streaming), inline AI, LLM client, retrieval, citations, billing, keys
+    services/documents/   parsing, OCR, upload ingest, DOCX export
+    agents/harness/       the agent harness (engine, prompts, house style) and one playbook per profession
+    agents/rlm/           deep read: the code sandbox, the recursive reading loop and its prompts
+    agents/prompts.py     prompts for chat and inline AI
+    text/                 markdown, placeholder, intent and safety helpers
+  scripts/                import_sqlite, set_plan, generate_secret_key
+  tests/                  unit tests (python -m unittest discover -s tests -t .)
+frontend/src/
+  components/ribbon/      the Home ribbon and Find & Replace
+  components/             review panel, inline AI card, "/" menu, chat
+  components/studio/      Studio: profession picker, brief, the crew line and review notes
+  extensions/             TipTap extensions (paragraph format, search, "/" commands, autocomplete)
+  editor/                 editor commands, AI change review, Format Painter, dictation
+  services/http.ts        API calls with login and paywall handling
+docker-compose.yml        local Postgres + Redis
+```
 
 ---
 
@@ -177,26 +180,14 @@ AI_Document_Editor/
 
 | Issue | Solution |
 |-------|----------|
-| "Ollama not running" | Run `ollama serve` in a terminal |
-| Model not found | Run `ollama pull gemma3:latest` |
-| Embedding model not found | Run `ollama pull nomic-embed-text:latest` |
-| Port 3000 in use | Change port in `frontend/vite.config.ts` |
-| Port 8000 in use | Change port in `backend/main.py` |
-| Can't access from phone | Use `start-lan.bat` instead of `start-portable.bat` |
+| Database won't start | Start Docker Desktop, then run `docker compose up -d` again |
+| AI says the service is unavailable | Run `ollama serve`, and `ollama pull gemma3:latest` |
+| Document search finds nothing | Run `ollama pull nomic-embed-text:latest` |
+| 402 / "used all AI requests" | Add your own API key under **AI & Plan**, or raise `FREE_AI_DAILY_LIMIT` |
+| Port 3000/8000 in use | Change `server.port` in `frontend/vite.config.ts` / `PORT` in `backend/.env` |
 
 ---
 
-## 📄 License
+## 🙏 Tech stack
 
-Open source - feel free to use and modify!
-
----
-
-## 🙏 Tech Stack
-
-- **Frontend**: React + TypeScript + Vite + TailwindCSS
-- **Backend**: Python FastAPI + LangChain
-- **Chat AI**: Ollama (`gemma3:latest`)
-- **Embeddings**: Ollama (`nomic-embed-text:latest`)
-- **Vector DB**: ChromaDB
-- **OCR**: Tesseract + PaddleOCR
+React + TypeScript + Vite + TipTap · FastAPI + LangGraph · Postgres + pgvector (Prisma migrations, asyncpg) · Redis · Ollama or any OpenAI-compatible API · Tesseract OCR · pandoc

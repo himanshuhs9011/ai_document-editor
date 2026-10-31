@@ -1,227 +1,168 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import {
-  Upload,
+  Check,
+  ChevronDown,
+  CircleAlert,
+  Cloud,
+  Copy,
   Download,
-  PanelLeftOpen,
-  PanelLeftClose,
-  PanelRightOpen,
-  PanelRightClose,
   FileText,
+  Loader2,
+  PanelLeftOpen,
+  PanelRightOpen,
+  Sparkles,
+  Upload,
 } from 'lucide-react';
+import { useRecoilValue } from 'recoil';
 import { useAppStore } from '../stores/simpleStore';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  isEditingState,
-  documentContentState,
-  editorInstanceState,
-} from '../stores/recoilState';
-import MainEditorToolbar from './MainEditorToolbar';
-import { fetchMarkdownDocument, loadMarkdownIntoEditor, convertMarkdownToHtml, getMarkdownFromEditor } from '../utils/markdownUtils';
+import { documentContentState } from '../stores/recoilState';
+import { useDismiss } from '../hooks/useDismiss';
+import { DOCUMENT_SAVE_EVENT, DocumentSaveState } from '../editor/saveStatus';
+import HomeRibbon from './ribbon/HomeRibbon';
+import AiSettingsDialog from './AiSettingsDialog';
+import UsageChip from './UsageChip';
 
-const DocumentToolbar: React.FC = () => {
-  const {
-    currentDocument,
-    currentSession,
-    uploadDocument,
-    exportDocument,
-    isUploading,
-    isExporting,
-    ui,
-    updateUI,
-  } = useAppStore();
-  const isEditing = useRecoilValue(isEditingState);
+const iconButton = 'inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-sunken hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus';
+const menuItem = 'flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs text-ink transition-colors hover:bg-sunken focus-visible:bg-sunken focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40';
+
+const FileMenu: React.FC = () => {
+  const { uploadDocument, exportDocument, isUploading, isExporting } = useAppStore();
   const documentContent = useRecoilValue(documentContentState);
-  const editor = useRecoilValue(editorInstanceState);
-  const setIsEditing = useSetRecoilState(isEditingState);
-  const setDocumentContent = useSetRecoilState(documentContentState);
-  const [isLoadingMarkdown, setIsLoadingMarkdown] = useState(false);
-
-  const toggleLeftSidebar = () => {
-    updateUI({ isLeftSidebarCollapsed: !ui.isLeftSidebarCollapsed });
-  };
-
-  const toggleRightSidebar = () => {
-    updateUI({ isRightSidebarCollapsed: !ui.isRightSidebarCollapsed });
-  };
-
-  const handleLoadMarkdown = async () => {
-    setIsLoadingMarkdown(true);
-    try {
-      const result = await fetchMarkdownDocument();
-      console.log('📄 Loaded Markdown:', result.filename);
-      
-      let htmlContent: string | null = null;
-
-      if (editor) {
-        htmlContent = loadMarkdownIntoEditor(editor, result.content);
-      } 
-
-      if (!htmlContent) {
-        // Editor might not be ready; convert markdown manually and update state
-        htmlContent = convertMarkdownToHtml(result.content);
-      }
-
-      setDocumentContent(htmlContent);
-      
-      console.log('✅ Markdown loaded into editor');
-    } catch (error) {
-      console.error('❌ Failed to load Markdown:', error);
-      alert('Failed to load Markdown document. Make sure content has been generated first.');
-    } finally {
-      setIsLoadingMarkdown(false);
-    }
-  };
-
-  const handleExportMarkdown = () => {
-    if (!editor) {
-      console.error('Editor not available');
-      return;
-    }
-    
-    try {
-      const markdown = getMarkdownFromEditor(editor);
-      
-      // Create a downloadable file
-      const blob = new Blob([markdown], { type: 'text/markdown' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'document.md';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
-      console.log('✅ Markdown exported');
-    } catch (error) {
-      console.error('❌ Failed to export Markdown:', error);
-    }
-  };
-
-  const sessionTimestamp = useMemo(() => {
-    const rawTimestamp = currentSession?.updated_at || currentSession?.created_at;
-    const targetDate = rawTimestamp ? new Date(rawTimestamp) : new Date();
-
-    if (Number.isNaN(targetDate.getTime())) {
-      return 'Session —';
-    }
-
-    return `Session ${targetDate.toLocaleString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    })}`;
-  }, [currentSession]);
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const close = useCallback(() => setOpen(false), []);
+  useDismiss(ref, open, close);
+  const empty = !documentContent || !documentContent.replace(/<[^>]+>/g, '').trim();
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      await uploadDocument(file);
-      event.target.value = '';
-    }
+    event.target.value = '';
+    if (file) await uploadDocument(file);
+  };
+
+  const copyText = () => {
+    setOpen(false);
+    const text = (window as any).__tiptapEditor?.getText() || '';
+    navigator.clipboard.writeText(text).then(
+      () => toast.success('Document text copied'),
+      () => toast.error("Couldn't copy to the clipboard"),
+    );
   };
 
   return (
-    <div className="flex w-full flex-shrink-0 flex-col border-b border-gray-200 bg-white/90 shadow-sm backdrop-blur dark:border-gray-800 dark:bg-gray-900/80">
-      <div className="flex flex-col gap-2 px-6 py-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col gap-2 text-sm text-gray-700 dark:text-gray-200 sm:flex-row sm:items-center sm:gap-4">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={toggleLeftSidebar}
-              className={`inline-flex items-center justify-center rounded-md border px-2 py-1 text-sm transition ${
-                ui.isLeftSidebarCollapsed
-                  ? 'border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                  : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200'
-              }`}
-              title={ui.isLeftSidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
-            >
-              {ui.isLeftSidebarCollapsed ? (
-                <PanelLeftOpen className="h-4 w-4" />
-              ) : (
-                <PanelLeftClose className="h-4 w-4" />
-              )}
-            </button>
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+        className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-ink-soft transition-colors hover:bg-sunken hover:text-ink"
+      >
+        <FileText className="h-3.5 w-3.5" aria-hidden="true" />
+        <span>{isUploading ? 'Uploading…' : isExporting ? 'Exporting…' : 'File'}</span>
+        <ChevronDown className={`h-3 w-3 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+      </button>
+      <input ref={fileInput} type="file" accept=".docx,.pdf,.txt" onChange={handleFileChange} className="hidden" />
+      {open && (
+        <div role="menu" aria-label="File" className="absolute right-0 top-full z-40 mt-2 w-60 rounded-xl border border-line bg-paper p-1.5 shadow-xl">
+          <div className="px-2 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-soft">Document</div>
+          <button type="button" role="menuitem" className={menuItem} disabled={isUploading} onClick={() => { setOpen(false); fileInput.current?.click(); }}>
+            <Upload className="h-4 w-4 text-ink-soft" aria-hidden="true" />
+            <span>Open a file</span>
+            <span className="ml-auto text-[10px] text-ink-soft">DOCX · PDF · TXT</span>
+          </button>
+          <button type="button" role="menuitem" className={menuItem} disabled={empty || isExporting} onClick={() => { setOpen(false); exportDocument('docx'); }}>
+            <Download className="h-4 w-4 text-ink-soft" aria-hidden="true" />
+            <span>Download as Word</span>
+          </button>
+          <button type="button" role="menuitem" className={menuItem} disabled={empty} onClick={copyText}>
+            <Copy className="h-4 w-4 text-ink-soft" aria-hidden="true" />
+            <span>Copy all text</span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 
-            <button
-              onClick={toggleRightSidebar}
-              className={`inline-flex items-center justify-center rounded-md border px-2 py-1 text-sm transition ${
-                ui.isRightSidebarCollapsed
-                  ? 'border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                  : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200'
-              }`}
-              title={ui.isRightSidebarCollapsed ? 'Show assistant' : 'Hide assistant'}
-            >
-              {ui.isRightSidebarCollapsed ? (
-                <PanelRightOpen className="h-4 w-4" />
-              ) : (
-                <PanelRightClose className="h-4 w-4" />
-              )}
-            </button>
-          </div>
+const SAVE_COPY: Record<DocumentSaveState, { label: string; icon: React.ReactNode; tone: string }> = {
+  ready: { label: 'Autosave on', icon: <Cloud className="h-3 w-3" />, tone: 'text-ink-soft' },
+  dirty: { label: 'Changes pending', icon: <span className="h-1.5 w-1.5 rounded-full bg-warn" />, tone: 'text-ink-soft' },
+  saving: { label: 'Saving…', icon: <Loader2 className="h-3 w-3 animate-spin" />, tone: 'text-ink-soft' },
+  saved: { label: 'Saved', icon: <Check className="h-3 w-3" />, tone: 'text-done' },
+  error: { label: 'Save failed', icon: <CircleAlert className="h-3 w-3" />, tone: 'text-danger' },
+};
 
-          <div className="flex flex-col gap-1">
-            <span className="text-base font-semibold tracking-wide">AI Document Editor</span>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{sessionTimestamp}</span>
+const DocumentToolbar: React.FC = () => {
+  const { currentDocument, currentSession, ui, updateUI } = useAppStore();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [saveState, setSaveState] = useState<DocumentSaveState>('ready');
+  const leftOpen = !ui.isLeftSidebarCollapsed;
+  const rightOpen = !ui.isRightSidebarCollapsed;
+
+  useEffect(() => {
+    const onSaveState = (event: Event) => setSaveState((event as CustomEvent<DocumentSaveState>).detail);
+    window.addEventListener(DOCUMENT_SAVE_EVENT, onSaveState);
+    return () => window.removeEventListener(DOCUMENT_SAVE_EVENT, onSaveState);
+  }, []);
+
+  const toggleSessions = () => {
+    const opening = leftOpen === false;
+    updateUI({
+      isLeftSidebarCollapsed: leftOpen,
+      ...(opening && window.innerWidth < 1024 ? { isRightSidebarCollapsed: true } : {}),
+    });
+  };
+
+  const toggleAssistant = () => {
+    const opening = rightOpen === false;
+    updateUI({
+      isRightSidebarCollapsed: rightOpen,
+      ...(opening && window.innerWidth < 1024 ? { isLeftSidebarCollapsed: true } : {}),
+    });
+  };
+
+  const save = SAVE_COPY[saveState];
+  const title = currentDocument?.filename || 'Untitled document';
+
+  return (
+    <div className="z-30 flex w-full flex-shrink-0 flex-col border-b border-line bg-paper/95 backdrop-blur-xl">
+      <div className="flex h-14 items-center gap-2 px-2.5 sm:px-3">
+        <button type="button" onClick={toggleSessions} className={iconButton} title={leftOpen ? 'Hide sessions' : 'Show sessions'} aria-label={leftOpen ? 'Hide sessions' : 'Show sessions'}>
+          <PanelLeftOpen className={`h-4 w-4 transition-transform ${leftOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        <div className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-accent text-accent-ink shadow-sm sm:flex">
+          <Sparkles className="h-4 w-4" aria-hidden="true" />
+        </div>
+        <div className="hidden flex-shrink-0 md:block">
+          <p className="text-xs font-semibold tracking-[-0.01em]">AI Document</p>
+          <p className="text-[10px] text-ink-soft">Editor</p>
+        </div>
+        <div className="hidden h-6 w-px bg-line md:block" aria-hidden="true" />
+
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs font-medium" title={title}>{title}</p>
+          <div className="flex items-center gap-1.5 text-[10px] text-ink-soft">
+            <span className="hidden max-w-40 truncate sm:inline">{currentSession?.name || 'No session selected'}</span>
+            <span className="hidden sm:inline" aria-hidden="true">·</span>
+            <span className={`inline-flex items-center gap-1 ${save.tone}`}>{save.icon}{save.label}</span>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 text-sm">
-          <button
-            onClick={() => exportDocument('docx')}
-            disabled={!documentContent || documentContent.trim().length === 0 || isExporting}
-            className="inline-flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-1.5 font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
-          >
-            <Download className="h-4 w-4" />
-            {isExporting ? 'Exporting…' : 'Download'}
-          </button>
-
-          <span className="max-w-[150px] truncate text-gray-500 dark:text-gray-400">
-            {currentDocument?.filename || 'No file chosen'}
-          </span>
-
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-1.5 font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
-            <Upload className="h-4 w-4" />
-            {isUploading ? 'Uploading...' : 'Upload'}
-            <input
-              type="file"
-              onChange={handleFileChange}
-              className="hidden"
-              accept=".doc,.docx,.pdf,.txt"
-            />
-          </label>
-
-          {/* Removed Edit/View toggle - Editor is always editable */}
-
-          <button
-            onClick={() => {
-              if (!documentContent) {
-                return;
-              }
-
-              if (navigator?.clipboard?.writeText) {
-                navigator.clipboard.writeText(documentContent).catch((error) => {
-                  console.error('Failed to copy document content:', error);
-                });
-              } else {
-                console.warn('Clipboard API not available');
-              }
-            }}
-            disabled={!documentContent}
-            className="inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-3 py-1.5 text-lg shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800"
-            title="Copy document content"
-          >
-            📋
-          </button>
-        </div>
+        <FileMenu />
+        <UsageChip settingsOpen={settingsOpen} onOpen={() => setSettingsOpen(true)} />
+        <button type="button" onClick={toggleAssistant} className={iconButton} title={rightOpen ? 'Hide assistant' : 'Show assistant'} aria-label={rightOpen ? 'Hide assistant' : 'Show assistant'}>
+          <PanelRightOpen className={`h-4 w-4 transition-transform ${rightOpen ? 'rotate-180' : ''}`} />
+        </button>
       </div>
 
-      <div className="border-t border-gray-200 px-4 py-2 bg-white/90 dark:bg-gray-900/80 dark:border-gray-800">
-        <MainEditorToolbar />
+      <div className="border-t border-line/70 bg-panel/65">
+        <HomeRibbon />
       </div>
+      <AiSettingsDialog open={settingsOpen} onOpen={() => setSettingsOpen(true)} onClose={() => setSettingsOpen(false)} />
     </div>
   );
 };

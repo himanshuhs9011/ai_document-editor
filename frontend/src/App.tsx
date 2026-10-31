@@ -1,145 +1,139 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Toaster } from 'react-hot-toast';
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 import DocumentToolbar from './components/DocumentToolbar';
-import ChatSidebar from './components/ChatSidebar_New';
+import ChatSidebar from './components/ChatSidebar';
 import SelectionAiAssistant from './components/SelectionAiAssistant';
+import Studio from './components/studio/Studio';
 import { useAppStore } from './stores/simpleStore';
 
 function App() {
-  const { ui, updateUI } = useAppStore();
+  const { ui, updateUI, loadSessions, initializeCurrentSession } = useAppStore();
+  const booted = useRef(false);
 
-  // Handle responsive sidebar behavior based on screen size
   useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      
-      // Auto-collapse sidebars on smaller screens
-      if (width < 768) {
-        // On mobile, collapse both sidebars - chat input will appear at bottom
-        updateUI({ 
-          isLeftSidebarCollapsed: true, 
-          isRightSidebarCollapsed: true 
-        });
-      } else if (width < 1024) {
-        // On tablets, collapse both sidebars by default
-        updateUI({ 
-          isLeftSidebarCollapsed: true, 
-          isRightSidebarCollapsed: true 
-        });
-      } else if (width < 1280) {
-        // On smaller laptops, show left sidebar only
-        updateUI({ 
-          isLeftSidebarCollapsed: false, 
-          isRightSidebarCollapsed: true 
-        });
+    document.documentElement.dataset.theme = ui.isDarkMode ? 'dark' : 'light';
+    return () => { delete document.documentElement.dataset.theme; };
+  }, [ui.isDarkMode]);
+
+  // Session bootstrap belongs to the always-mounted shell, not a responsive drawer.
+  useEffect(() => {
+    if (booted.current) return;
+    booted.current = true;
+    let cancelled = false;
+
+    const start = async () => {
+      await loadSessions();
+      if (cancelled) return;
+      await initializeCurrentSession();
+      if (cancelled) return;
+
+      const state = useAppStore.getState();
+      if (state.currentSession) return;
+      if (state.sessions[0]) {
+        await state.setCurrentSession(state.sessions[0]);
+      } else {
+        await state.createNewSession(`Session ${new Date().toLocaleString()}`);
       }
-      // On larger screens (>= 1280px), keep user preference
     };
 
-    // Run on mount
-    handleResize();
+    start();
+    return () => { cancelled = true; };
+  }, [initializeCurrentSession, loadSessions]);
 
-    // Add resize listener
-    window.addEventListener('resize', handleResize);
-
-    // Cleanup
-    return () => window.removeEventListener('resize', handleResize);
+  // Entering a narrow breakpoint closes panels that would cover the editor.
+  // We never force them open again, so the user's preference remains intact.
+  useEffect(() => {
+    const narrow = window.matchMedia('(max-width: 1023px)');
+    const medium = window.matchMedia('(min-width: 1024px) and (max-width: 1279px)');
+    const adapt = () => {
+      if (narrow.matches) {
+        updateUI({ isLeftSidebarCollapsed: true, isRightSidebarCollapsed: true });
+      } else if (medium.matches) {
+        updateUI({ isRightSidebarCollapsed: true });
+      }
+    };
+    adapt();
+    narrow.addEventListener('change', adapt);
+    medium.addEventListener('change', adapt);
+    return () => {
+      narrow.removeEventListener('change', adapt);
+      medium.removeEventListener('change', adapt);
+    };
   }, [updateUI]);
 
-  const handleLeftResize = (newWidth: number) => {
-    updateUI({ leftSidebarWidth: newWidth });
-  };
-
-  const handleRightResize = (newWidth: number) => {
-    updateUI({ rightSidebarWidth: newWidth });
-  };
+  const leftOpen = !ui.isLeftSidebarCollapsed;
+  const rightOpen = !ui.isRightSidebarCollapsed;
 
   return (
-    <div className={`h-screen flex overflow-hidden ${ui.isDarkMode ? 'bg-black' : 'bg-gray-100'}`}>
+    <div className="relative flex h-dvh min-h-0 w-full overflow-hidden bg-sunken font-ui text-ink">
       <Toaster
         position="top-right"
         toastOptions={{
           duration: 4000,
           style: {
-            background: ui.isDarkMode ? '#000000' : '#363636',
-            color: '#fff',
+            background: 'oklch(var(--ink))',
+            color: 'oklch(var(--paper))',
+            borderRadius: '12px',
+            fontSize: '0.8125rem',
           },
         }}
       />
-      
-      {/* Left Sidebar - Sessions */}
-      {/* Desktop: inline sidebar */}
-      <div 
-        className={`hidden lg:block flex-shrink-0 overflow-hidden transition-all duration-500 ease-in-out ${
-          ui.isLeftSidebarCollapsed ? 'w-0 opacity-0' : 'opacity-100'
+
+      {leftOpen && (
+        <button
+          type="button"
+          aria-label="Dismiss sessions overlay"
+          onClick={() => updateUI({ isLeftSidebarCollapsed: true })}
+          className="fixed inset-0 z-40 bg-black/45 backdrop-blur-[1px] lg:hidden"
+        />
+      )}
+      <aside
+        aria-label="Sessions"
+        className={`fixed inset-y-0 left-0 z-50 overflow-hidden shadow-2xl transition-[width,transform,opacity] duration-300 ease-out lg:relative lg:z-auto lg:shadow-none ${
+          leftOpen
+            ? 'w-[280px] translate-x-0 lg:w-[272px] lg:opacity-100'
+            : 'pointer-events-none w-[280px] -translate-x-full lg:w-0 lg:translate-x-0 lg:opacity-0'
         }`}
-        style={{ 
-          width: ui.isLeftSidebarCollapsed ? 0 : Math.min(ui.leftSidebarWidth, window.innerWidth * 0.3),
-          minWidth: ui.isLeftSidebarCollapsed ? 0 : '250px',
-          transform: ui.isLeftSidebarCollapsed ? 'translateX(-100%)' : 'translateX(0)',
-          animation: ui.isLeftSidebarCollapsed ? 'slideOutLeft 0.4s ease-in-out' : 'slideInLeft 0.4s ease-in-out'
-        }}
       >
-        <div className="h-full" style={{ width: '250px', minWidth: '250px' }}>
-          <Sidebar onResize={handleLeftResize} />
+        <div className="h-full w-[280px] lg:w-[272px]">
+          <Sidebar />
         </div>
-      </div>
+      </aside>
 
-      {/* Mobile: Left sidebar as overlay */}
-      {!ui.isLeftSidebarCollapsed && (
-        <>
-          <div 
-            className="lg:hidden fixed inset-0 z-40 bg-black transition-opacity duration-300 ease-in-out"
-            style={{ opacity: 0.5 }}
-            onClick={() => updateUI({ isLeftSidebarCollapsed: true })} 
-          />
-          <div 
-            className="lg:hidden fixed inset-y-0 left-0 z-50 w-72 sm:w-80"
-          >
-            <Sidebar onResize={handleLeftResize} />
-          </div>
-        </>
-      )}
-
-      {/* Center Stack: toolbar + main content */}
-      <div className="flex-1 min-w-0 transition-all duration-500 ease-in-out">
-        <div className="flex h-full flex-col">
-          <DocumentToolbar />
-          <div className="flex-1 min-h-0 overflow-hidden">
-            <MainContent />
-          </div>
+      <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
+        <DocumentToolbar />
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <MainContent />
         </div>
-      </div>
+      </main>
 
-      {/* Right Sidebar (Chat) - Animated slide in/out */}
-      {!ui.isRightSidebarCollapsed && (
-        <>
-          {/* Mobile: Fixed overlay with fade animation */}
-          <div 
-            className="lg:hidden fixed inset-0 z-40 bg-black transition-opacity duration-300 ease-in-out overlay-enter"
-            style={{
-              opacity: 0.5
-            }}
-            onClick={() => updateUI({ isRightSidebarCollapsed: true })} 
-          />
-          <div 
-            className="lg:relative fixed inset-y-0 right-0 z-50 flex-shrink-0 w-full sm:w-96 lg:w-auto chat-sidebar-enter"
-            style={{ 
-              width: window.innerWidth >= 1024 ? Math.min(ui.rightSidebarWidth, window.innerWidth * 0.35) : undefined,
-              minWidth: window.innerWidth >= 1024 ? '300px' : undefined
-            }}
-          >
-            <ChatSidebar onResize={handleRightResize} />
-          </div>
-        </>
+      {rightOpen && (
+        <button
+          type="button"
+          aria-label="Dismiss assistant overlay"
+          onClick={() => updateUI({ isRightSidebarCollapsed: true })}
+          className="fixed inset-0 z-40 bg-black/45 backdrop-blur-[1px] xl:hidden"
+        />
       )}
+      <aside
+        aria-label="AI assistant"
+        className={`fixed inset-y-0 right-0 z-50 overflow-hidden shadow-2xl transition-[width,transform,opacity] duration-300 ease-out xl:relative xl:z-auto xl:shadow-none ${
+          rightOpen
+            ? 'w-full translate-x-0 sm:w-[400px] xl:w-[380px] xl:opacity-100'
+            : 'pointer-events-none w-full translate-x-full sm:w-[400px] xl:w-0 xl:translate-x-0 xl:opacity-0'
+        }`}
+      >
+        <div className="h-full w-full sm:w-[400px] xl:w-[380px]">
+          <ChatSidebar />
+        </div>
+      </aside>
+
       <SelectionAiAssistant />
+      <Studio />
     </div>
   );
 }
-
-
 
 export default App;

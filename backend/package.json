@@ -1,0 +1,13 @@
+{
+  "name": "document-ai-editor-backend",
+  "private": true,
+  "description": "Prisma schema and migrations for the Python API",
+  "scripts": {
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio"
+  },
+  "devDependencies": {
+    "prisma": "6.19.3"
+  }
+}

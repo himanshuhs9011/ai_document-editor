@@ -1,68 +1,29 @@
-# Core FastAPI components
-fastapi
+# Web server
+fastapi==0.127.0
 uvicorn==0.35.0
 python-multipart==0.0.20
 python-dotenv==1.1.1
-aiofiles==24.1.0
+httpx==0.28.1
+pydantic==2.11.7
+email-validator==2.1.0
 
-# LangChain ecosystem
-langchain==0.3.27
-langchain-community==0.3.27
-langchain-core==0.3.74
-langchain-ollama==0.3.6
-langchain-openai==0.3.30
-langchain-text-splitters==0.3.9
+# Storage (tables are created by Prisma migrations in backend/prisma)
+asyncpg==0.32.0
+redis==8.1.0
+
+# Agents
 langgraph==0.6.5
-langgraph-checkpoint==2.1.1
-langsmith==0.4.14
-
-# Ollama integration
-ollama==0.5.3
-
-# Vector database
-chromadb==1.0.20
-sentence-transformers==2.6.1
 
 # Document processing
 PyMuPDF==1.26.3
-pypdfium2==4.30.0
 python-docx==1.1.2
+mammoth==1.11.0
+pypandoc==1.16.2
 pdf2image==1.17.0
 pytesseract==0.3.13
-reportlab==4.0.8
+Pillow==12.0.0
 
-# Database
-aiosqlite==0.20.0
-
-# Authentication & Security
+# Auth and secrets
 PyJWT==2.10.1
 bcrypt==4.2.1
-python-jose[cryptography]==3.3.0
-
-# Data processing
-pandas==2.3.1
-numpy>=2.1.0
-
-# HTTP client
-requests==2.32.4
-httpx==0.28.1
-
-# Data validation
-pydantic==2.11.7
-pydantic-settings==2.10.1
-email-validator==2.1.0
-
-# UI utilities
-tqdm==4.67.1
-rich==14.1.0
-
-# text to word
-docx
-pypandoc
-
-# tools
-matplotlib
-Pillow
-plotly
-
-mammoth
+cryptography==46.0.3

@@ -9,7 +9,7 @@ import {
 } from '../stores/recoilState';
 import { useAppStore } from '../stores/simpleStore';
 import { Bot, CheckCircle2, Loader2, Sparkles, X } from 'lucide-react';
-import { API_BASE_URL } from '../config/api';
+import { apiJson } from '../services/http';
 
 const QUICK_ACTIONS: Array<{ id: string; label: string; instruction: string }> = [
   {
@@ -92,7 +92,7 @@ const SelectionAiAssistant: React.FC = () => {
 
     try {
       setStatus('loading');
-      setStatusMessage('Asking Ollama to craft an update...');
+      setStatusMessage('Asking the AI to craft an update...');
 
       const payload = {
         content: [
@@ -105,23 +105,19 @@ const SelectionAiAssistant: React.FC = () => {
           trimmedSelection,
         ].join('\n'),
         document_id: currentDocument?.document_id,
-        session_id: currentSession?.id || currentDocument?.document_id || 'default',
+        session_id: currentSession?.id,
       };
 
-      const response = await fetch(`${API_BASE_URL}/api/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
+      const sessionAtStart = currentSession?.id;
+      const data = await apiJson('/api/chat', { method: 'POST', body: JSON.stringify(payload) });
       const aiText = (data?.response || '').trim();
+
+      // The rewrite belongs to the passage it was asked about; if another session opened meanwhile, it is not applied.
+      if (useAppStore.getState().currentSession?.id !== sessionAtStart) {
+        setStatus('error');
+        setStatusMessage('The session changed before the AI answered, so nothing was changed.');
+        return;
+      }
 
       if (!aiText) {
         throw new Error('AI returned an empty response.');
@@ -219,7 +215,7 @@ const SelectionAiAssistant: React.FC = () => {
           </div>
 
           <div className="mt-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400">
               Quick actions
             </h3>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">

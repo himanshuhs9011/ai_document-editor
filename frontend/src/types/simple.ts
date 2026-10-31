@@ -18,8 +18,25 @@ export interface Document {
   pages: DocumentPage[];
   metadata?: any;
   created_at: string;
-  modified_document_id?: string; // For tracking modified versions
   session_id?: string;
+}
+
+/** A passage from one of the user's documents that an answer cites as [n]. */
+export interface Source {
+  n: number;
+  document_id: string;
+  filename: string;
+  snippet: string;
+}
+
+/** One step of a deep read: the code the model ran over the document and what it printed. */
+export interface ReadStep {
+  step: number;
+  code?: string;
+  output?: string;
+  error?: string | null;
+  sub_calls?: number;
+  note?: string;
 }
 
 export interface ChatMessage {
@@ -28,14 +45,17 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   timestamp: string;
   sessionId?: string;
-  suggestions?: Array<{
-    type: string;
-    original_text: string;
-    new_text: string;
-    position: any;
-    confidence: number;
-    explanation: string;
-  }>;
+  sources?: Source[];
+  streaming?: boolean;
+  /** Deep read only: the steps as they ran, then totals once the answer is in. */
+  trace?: ReadStep[];
+  readSummary?: { steps: number; sub_calls: number; mode: 'direct' | 'recursive' };
+}
+
+/** An AI-written new version of the document, waiting for the user to accept or reject its changes. */
+export interface Proposal {
+  markdown: string;
+  origin: string;
 }
 
 export interface Session {
@@ -43,11 +63,6 @@ export interface Session {
   name: string;
   created_at: string;
   updated_at: string;
-}
-
-export interface ChatResponse {
-  response: string;
-  suggestions: string[];
 }
 
 export interface UIState {
@@ -58,17 +73,4 @@ export interface UIState {
   documentZoom: number;
   currentPage: number;
   isDarkMode: boolean;
-}
-
-export interface UploadResponse {
-  document_id: string;
-  filename: string;
-  total_pages: number;
-  message: string;
-}
-
-export interface ExportResponse {
-  download_url: string;
-  filename: string;
-  message: string;
 }

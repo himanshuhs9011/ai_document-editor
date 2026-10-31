@@ -1,38 +1,34 @@
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+"""User, login and token models."""
 from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, EmailStr, Field
+
 
 class UserBase(BaseModel):
-    """Base user model"""
     email: EmailStr
     username: str = Field(..., min_length=3, max_length=50)
     full_name: Optional[str] = None
 
+
 class UserCreate(UserBase):
-    """User creation model"""
-    password: str = Field(..., min_length=6)
+    password: str = Field(..., min_length=8, max_length=128)
+
 
 class UserLogin(BaseModel):
-    """User login model"""
     email: EmailStr
     password: str
 
+
 class UserResponse(UserBase):
-    """User response model (no password)"""
     id: str
     created_at: datetime
     is_active: bool = True
-    
-    class Config:
-        from_attributes = True
+    plan: str = "free"
+    plan_expires_at: Optional[datetime] = None
+
 
 class Token(BaseModel):
-    """JWT token response"""
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
-
-class TokenData(BaseModel):
-    """Token payload data"""
-    user_id: str
-    email: str

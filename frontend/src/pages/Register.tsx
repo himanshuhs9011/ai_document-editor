@@ -1,199 +1,83 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
+import { AuthShell, AuthField, AuthError, AuthSubmit } from './AuthShell';
+
+// Mirrors the backend's UserCreate rules so most mistakes are caught before the request.
+const validate = (form: Record<string, string>): string => {
+  if (!form.email || !form.username || !form.password) return 'Email, username and password are required.';
+  if (!/\S+@\S+\.\S+/.test(form.email)) return 'That email address looks incomplete.';
+  if (form.username.trim().length < 3 || form.username.trim().length > 50) return 'Usernames are 3 to 50 characters.';
+  if (form.password.length < 8) return 'Passwords need at least 8 characters.';
+  if (form.password.length > 128) return 'Passwords can be at most 128 characters.';
+  if (form.password !== form.confirmPassword) return "The two passwords don't match.";
+  return '';
+};
 
 export default function Register() {
   const navigate = useNavigate();
   const { register, isLoading, error, clearError } = useAuthStore();
-  
-  const [formData, setFormData] = useState({
-    email: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-    fullName: '',
-  });
+
+  const [form, setForm] = useState({ email: '', username: '', fullName: '', password: '', confirmPassword: '' });
   const [validationError, setValidationError] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
-    setValidationError('');
-
-    // Validation
-    if (!formData.email || !formData.username || !formData.password || !formData.confirmPassword) {
-      setValidationError('Please fill in all required fields');
-      return;
-    }
-
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      setValidationError('Please enter a valid email');
-      return;
-    }
-
-    if (formData.username.length < 3) {
-      setValidationError('Username must be at least 3 characters');
-      return;
-    }
-
-    if (formData.password.length < 8) {
-      setValidationError('Password must be at least 8 characters');
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      setValidationError('Passwords do not match');
-      return;
-    }
-
+    const problem = validate(form);
+    setValidationError(problem);
+    if (problem) return;
     try {
       await register({
-        email: formData.email,
-        username: formData.username,
-        password: formData.password,
-        full_name: formData.fullName || undefined,
+        email: form.email.trim(),
+        username: form.username.trim(),
+        password: form.password,
+        full_name: form.fullName.trim() || undefined,
       });
-      navigate('/');
-    } catch (err) {
-      // Error is handled by the store
+      navigate('/', { replace: true });
+    } catch {
+      // The store holds the message.
     }
   };
 
+  const message = validationError || error || '';
+  const mismatch = !!form.confirmPassword && form.password !== form.confirmPassword;
+
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-zinc-900 rounded-lg shadow-xl p-8 border border-zinc-800">
-          <h1 className="text-3xl font-bold text-white mb-2 text-center">
-            Create Account
-          </h1>
-          <p className="text-zinc-400 text-center mb-8">
-            Join Document AI Editor today
-          </p>
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {(error || validationError) && (
-              <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3">
-                <p className="text-red-400 text-sm">
-                  {validationError || error}
-                </p>
-              </div>
-            )}
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-2">
-                Email <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="you@example.com"
-                disabled={isLoading}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-zinc-300 mb-2">
-                Username <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                value={formData.username}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="johndoe"
-                disabled={isLoading}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-zinc-300 mb-2">
-                Full Name (optional)
-              </label>
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                value={formData.fullName}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="John Doe"
-                disabled={isLoading}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-zinc-300 mb-2">
-                Password <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="••••••••"
-                disabled={isLoading}
-              />
-              <p className="text-zinc-500 text-xs mt-1">
-                Must be at least 8 characters
-              </p>
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-zinc-300 mb-2">
-                Confirm Password <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="••••••••"
-                disabled={isLoading}
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-700 disabled:cursor-not-allowed text-white font-semibold py-2.5 rounded-lg transition-colors duration-200"
-            >
-              {isLoading ? 'Creating account...' : 'Create Account'}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-zinc-400 text-sm">
-              Already have an account?{' '}
-              <Link to="/login" className="text-blue-500 hover:text-blue-400 font-medium">
-                Sign in
-              </Link>
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-8 text-center">
-          <p className="text-zinc-500 text-xs">
-            By signing up, you agree to our Terms of Service and Privacy Policy
-          </p>
-        </div>
-      </div>
-    </div>
+    <AuthShell
+      title="Create your AI Document Editor account"
+      lede="Editing and export are free. Every account also gets free AI requests each day, or you can use your own API key with any provider."
+      footer={<>Already have an account? <Link to="/login" onClick={clearError}>Sign in</Link></>}
+    >
+      <form onSubmit={handleSubmit} className="grid gap-4" noValidate>
+        <AuthError message={message} />
+        <AuthField id="email" label="Email" type="email" autoComplete="email" value={form.email} onChange={handleChange} disabled={isLoading} autoFocus />
+        <AuthField id="username" label="Username" autoComplete="username" value={form.username} onChange={handleChange} disabled={isLoading} />
+        <AuthField id="fullName" label="Full name" optional autoComplete="name" value={form.fullName} onChange={handleChange} disabled={isLoading} />
+        <AuthField
+          id="password"
+          label="Password"
+          type="password"
+          autoComplete="new-password"
+          hint="At least 8 characters."
+          value={form.password}
+          onChange={handleChange}
+          disabled={isLoading}
+        />
+        <AuthField
+          id="confirmPassword"
+          label="Confirm password"
+          type="password"
+          autoComplete="new-password"
+          value={form.confirmPassword}
+          onChange={handleChange}
+          aria-invalid={mismatch || undefined}
+          disabled={isLoading}
+        />
+        <AuthSubmit busy={isLoading}>{isLoading ? 'Creating account…' : 'Create account'}</AuthSubmit>
+      </form>
+    </AuthShell>
   );
 }

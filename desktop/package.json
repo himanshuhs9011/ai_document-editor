@@ -1,0 +1,36 @@
+{
+  "name": "ai-document-editor-desktop",
+  "productName": "AI Document Editor",
+  "version": "1.0.0",
+  "description": "Desktop app for AI Document Editor",
+  "author": "himanshau",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "dist:mac": "electron-builder --mac",
+    "dist:linux": "electron-builder --linux"
+  },
+  "devDependencies": {
+    "electron": "44.7.2",
+    "electron-builder": "26.17.0"
+  },
+  "build": {
+    "appId": "com.himanshau.aidocumenteditor",
+    "productName": "AI Document Editor",
+    "files": ["main.js", "offline.html", "app.config.json", "build/icon.png"],
+    "directories": { "output": "release", "buildResources": "build" },
+    "win": { "target": ["nsis", "portable"], "icon": "build/icon.png" },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "artifactName": "AI-Document-Editor-Setup-${version}.${ext}"
+    },
+    "portable": { "artifactName": "AI-Document-Editor-${version}-portable.${ext}" },
+    "mac": { "target": ["dmg"], "category": "public.app-category.productivity", "icon": "build/icon.png" },
+    "linux": { "target": ["AppImage"], "category": "Office", "icon": "build/icon.png" }
+  }
+}

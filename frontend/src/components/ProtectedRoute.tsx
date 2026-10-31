@@ -17,18 +17,14 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   }, [token, isAuthenticated, checkAuth]);
 
   if (!isAuthenticated && !token) {
-    // Redirect to login while saving the attempted location
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Show loading state while checking authentication
+  // A stored token is being checked against the server.
   if (token && !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-zinc-400">Loading...</p>
-        </div>
+      <div role="status" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: 'var(--st-panel)', color: 'var(--st-ink-soft)', fontFamily: 'var(--st-font-ui)' }}>
+        Checking your sign-in…
       </div>
     );
   }

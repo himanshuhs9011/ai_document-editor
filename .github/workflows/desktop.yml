@@ -1,0 +1,48 @@
+# Builds the Windows desktop installer. Push a tag like v1.0.0 to publish it on a GitHub Release, or run it by hand
+# from the Actions tab to get the installer as a downloadable artifact. Set the repository variable APP_URL
+# (Settings > Secrets and variables > Actions > Variables) to the deployed site the app should open.
+name: Desktop app
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci
+      - name: Point the app at the deployed site
+        shell: bash
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          if [ -z "$APP_URL" ]; then echo "Set the APP_URL repository variable first"; exit 1; fi
+          printf '{\n  "appUrl": "%s"\n}\n' "$APP_URL" > app.config.json
+      - run: npx electron-builder --win --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: |
+            desktop/release/*.exe
+      - if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            desktop/release/AI-Document-Editor-Setup-*.exe
+            desktop/release/AI-Document-Editor-*-portable.exe
