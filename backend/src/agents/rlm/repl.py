@@ -7,7 +7,7 @@ exactly that. The Sandbox also caps time, memory and output, which exec() cannot
 """
 import asyncio
 from dataclasses import dataclass
-from typing import Any, Awaitable, Callable, List, Optional, Tuple
+from typing import Any, Awaitable, Callable, List, Optional, Tuple, cast
 
 from ...services.llm import LLMError, LLMService, ModelTarget
 from ...services.retrieval import split_text
@@ -110,7 +110,7 @@ class RLMRepl:
         failure = next((a for a in answers if isinstance(a, BaseException)), None)
         if failure is not None:
             raise failure if isinstance(failure, SandboxError) else SandboxError(f"helper call failed: {failure}")
-        return list(answers)
+        return cast(List[str], answers)
 
     async def _spend(self) -> None:
         """Count one helper call; refuses once the run's budget or the user's daily allowance is used up."""
