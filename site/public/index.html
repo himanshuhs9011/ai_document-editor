@@ -7,7 +7,7 @@
   <meta name="description" content="A free Word-style editor for Windows with AI built into the writing: reviewable edits, / commands, a team of writing agents (Studio), deep reading of long documents (RLM) and cited search across your files (RAG). Documents stay on your PC.">
   <meta name="theme-color" content="#000000">
   <meta property="og:title" content="AI Document Editor for Windows">
-  <meta property="og:description" content="Write, review and finish documents with AI, on your own PC.">
+  <meta property="og:description" content="Write with AI. Keep it on your PC.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/og-image.jpg">
   <link rel="icon" type="image/png" href="favicon.png">
@@ -15,118 +15,177 @@
   <link rel="stylesheet" href="assets/site.css">
 </head>
 <body id="top" class="overflow-x-clip bg-ground font-ui text-ink antialiased selection:bg-ink selection:text-ground">
-  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-20 focus:bg-ink focus:px-4 focus:py-2 focus:font-mono focus:text-ground">Skip to content</a>
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-30 focus:bg-ink focus:px-4 focus:py-2 focus:font-mono focus:text-ground">Skip to content</a>
 
-  <header class="sticky top-0 z-10 border-b border-line bg-ground/90 backdrop-blur">
+  <header class="sticky top-0 z-20 border-b border-ink bg-ground">
     <div class="mx-auto flex max-w-page items-center gap-4 px-4 py-3 sm:px-8">
       <a href="#top" class="flex items-center gap-3 font-mono font-bold">
-        <img src="favicon.png" alt="" width="24" height="24">
+        <span class="grid h-8 w-8 place-items-center bg-ink text-ground" aria-hidden="true">¶</span>
         <span>ai document editor</span>
-        <span class="hidden text-xs font-normal text-dim sm:inline">v1.0.0</span>
       </a>
-      <nav aria-label="Page" class="ml-auto flex items-center gap-1 font-mono text-sm text-soft">
-        <a href="#why" class="hidden px-3 py-1.5 hover:text-ink md:inline">Why AI</a>
-        <a href="#features" class="hidden px-3 py-1.5 hover:text-ink md:inline">Features</a>
-        <a href="#guide" class="hidden px-3 py-1.5 hover:text-ink md:inline">How to use</a>
-        <a href="#install" class="hidden px-3 py-1.5 hover:text-ink sm:inline">Install</a>
-        <a href="https://github.com/himanshuhs9011/ai_document-editor" class="px-3 py-1.5 hover:text-ink">GitHub</a>
+      <nav aria-label="Page" class="ml-auto flex items-center gap-1 font-mono text-sm">
+        <a href="#why" class="hidden px-3 py-1.5 text-soft hover:text-ink lg:inline">why</a>
+        <a href="#features" class="hidden px-3 py-1.5 text-soft hover:text-ink lg:inline">features</a>
+        <a href="#guide" class="hidden px-3 py-1.5 text-soft hover:text-ink lg:inline">how to use</a>
+        <a href="#install" class="hidden px-3 py-1.5 text-soft hover:text-ink md:inline">install</a>
+        <a href="https://github.com/himanshuhs9011/ai_document-editor" class="hidden px-3 py-1.5 text-soft hover:text-ink sm:inline">github</a>
+        <a href="https://github.com/himanshuhs9011/ai_document-editor/releases/download/latest1.0/AI-Document-Editor-Setup-1.0.0.exe"
+           class="ml-2 bg-ink px-3 py-1.5 font-bold text-ground hover:bg-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">download</a>
       </nav>
     </div>
   </header>
 
   <main id="main">
     <!-- Hero -->
-    <section class="border-b border-line">
-      <div class="mx-auto max-w-page px-4 pb-16 pt-16 sm:px-8 sm:pt-24">
-        <img src="favicon.png" alt="" width="64" height="64" class="border-2 border-ink p-2">
-        <h1 class="text-balance mt-10 font-mono text-4xl font-bold tracking-tight sm:text-6xl">ai document editor<span class="text-dim" aria-hidden="true">_</span></h1>
-        <p class="mt-8 max-w-2xl text-lg leading-relaxed text-soft">
-          A Word-style editor for Windows with AI built into the writing. Your documents stay on your PC.
+    <section class="relative border-b border-ink">
+      <div class="pointer-events-none absolute inset-0 bg-grid bg-grid [mask-image:linear-gradient(to_bottom,black_40%,transparent)]" aria-hidden="true"></div>
+      <div class="relative mx-auto max-w-page px-4 pb-20 pt-16 sm:px-8 sm:pt-24">
+        <p class="inline-flex items-center border border-ink font-mono text-xs uppercase tracking-[0.2em]">
+          <span class="bg-ink px-2 py-1 font-bold text-ground">new</span>
+          <span class="px-3 py-1">v1.0.0 for windows</span>
         </p>
-        <ul class="mt-6 flex flex-wrap gap-2 font-mono text-xs text-soft" aria-label="Facts">
-          <li class="border border-line px-2 py-1">v1.0.0</li>
-          <li class="border border-line px-2 py-1">Windows 10 · 11 · 64-bit</li>
-          <li class="border border-line px-2 py-1">free · open source</li>
-          <li class="border border-line px-2 py-1">works offline</li>
-          <li class="border border-line px-2 py-1">bring your own AI key</li>
-        </ul>
+        <h1 class="mt-8 text-balance font-mono text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-8xl">
+          Write with <span class="bg-ink px-2 text-ground">AI</span>.<br>
+          Keep it on your&nbsp;PC.<span class="animate-blink text-soft motion-reduce:animate-none" aria-hidden="true">_</span>
+        </h1>
+        <p class="mt-8 max-w-2xl text-lg leading-relaxed text-soft">
+          A Word-style editor with the AI built into the writing: edits you review word by word, a team of writing
+          agents, deep reading of long files and cited search across all of them.
+        </p>
 
-        <div id="download" class="mt-8 flex max-w-xl border border-line bg-surface font-mono text-sm">
-          <span class="flex min-w-0 flex-1 items-center gap-2 px-4 py-3">
-            <span class="text-dim" aria-hidden="true">↓</span>
+        <div id="download" class="mt-10 flex max-w-xl border border-ink bg-ground font-mono text-sm shadow-hard-line">
+          <span class="flex min-w-0 flex-1 items-center gap-3 px-4 py-4">
+            <span aria-hidden="true">↓</span>
             <span class="truncate">AI-Document-Editor-Setup-1.0.0.exe</span>
             <span class="ml-auto hidden flex-none text-dim sm:inline">158 MB</span>
           </span>
           <a href="https://github.com/himanshuhs9011/ai_document-editor/releases/download/latest1.0/AI-Document-Editor-Setup-1.0.0.exe"
-             class="flex flex-none items-center border-l border-line px-4 font-bold hover:bg-raised focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink active:bg-line">
+             class="flex flex-none items-center bg-ink px-5 font-bold text-ground hover:bg-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
             download
           </a>
         </div>
-        <div class="mt-5 flex flex-wrap gap-3 font-mono text-sm font-bold">
-          <a href="https://github.com/himanshuhs9011/ai_document-editor/releases/download/latest1.0/AI-Document-Editor-Setup-1.0.0.exe"
-             class="bg-ink px-4 py-2.5 text-ground hover:bg-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink active:translate-y-px">Download for Windows</a>
-          <a href="#guide" class="border border-line px-4 py-2.5 hover:bg-raised focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink active:translate-y-px">How the AI works</a>
+        <div class="mt-6 flex flex-wrap gap-3 font-mono text-sm font-bold">
+          <a href="#guide" class="border border-ink bg-ground px-4 py-2.5 transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#fff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink active:translate-x-0 active:translate-y-0 active:shadow-none">how the AI works →</a>
           <a href="https://github.com/himanshuhs9011/ai_document-editor/releases/download/latest1.0/AI-Document-Editor-1.0.0-portable.exe"
-             class="border border-line px-4 py-2.5 hover:bg-raised focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink active:translate-y-px">Portable .exe</a>
-          <a href="https://github.com/himanshuhs9011/ai_document-editor" class="border border-line px-4 py-2.5 hover:bg-raised focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink active:translate-y-px">GitHub</a>
+             class="border border-ink bg-ground px-4 py-2.5 transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#fff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink active:translate-x-0 active:translate-y-0 active:shadow-none">portable .exe</a>
+          <a href="https://github.com/himanshuhs9011/ai_document-editor" class="border border-ink bg-ground px-4 py-2.5 transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#fff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink active:translate-x-0 active:translate-y-0 active:shadow-none">source on github</a>
         </div>
+        <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-widest text-dim" aria-label="Facts">
+          <li>■ windows 10 · 11</li>
+          <li>■ free · open source</li>
+          <li>■ works offline</li>
+          <li>■ your own AI key</li>
+        </ul>
 
-        <figure class="mt-14">
+        <figure class="mt-16 border border-ink bg-ground shadow-hard-line-lg">
+          <div class="flex items-center gap-2 border-b border-ink px-3 py-2 font-mono text-xs" aria-hidden="true">
+            <span class="h-2.5 w-2.5 bg-ink"></span><span class="h-2.5 w-2.5 border border-ink"></span><span class="h-2.5 w-2.5 border border-ink"></span>
+            <span class="mx-auto truncate pr-10 text-soft">AI Document Editor — Project Falcon: launch plan</span>
+          </div>
           <img src="assets/app-screenshot.webp" width="2880" height="1720"
                alt="The AI Document Editor window: sessions on the left, a project plan in the editor, and the AI assistant on the right."
-               class="h-auto w-full border border-line">
-          <figcaption class="mt-3 font-mono text-xs text-dim">sessions · editor · AI assistant</figcaption>
+               class="h-auto w-full grayscale transition duration-500 hover:grayscale-0">
         </figure>
+        <p class="mt-5 font-mono text-xs text-dim">↑ sessions · editor · AI assistant. Hover for colour.</p>
       </div>
     </section>
 
+    <!-- Ticker (decorative; every item is explained below) -->
+    <div class="overflow-hidden border-b border-ink bg-ink text-ground" aria-hidden="true">
+      <div class="flex w-max animate-marquee motion-reduce:animate-none">
+        <ul class="flex shrink-0 items-center gap-8 py-3 pr-8 font-mono text-sm font-bold uppercase tracking-widest">
+          <li>chat &amp; review</li><li>✦</li><li>/ commands</li><li>✦</li><li>studio</li><li>✦</li><li>deep read · rlm</li><li>✦</li><li>search · rag</li><li>✦</li><li>autocomplete</li><li>✦</li><li>works offline</li><li>✦</li><li>your own key</li><li>✦</li>
+        </ul>
+        <ul class="flex shrink-0 items-center gap-8 py-3 pr-8 font-mono text-sm font-bold uppercase tracking-widest">
+          <li>chat &amp; review</li><li>✦</li><li>/ commands</li><li>✦</li><li>studio</li><li>✦</li><li>deep read · rlm</li><li>✦</li><li>search · rag</li><li>✦</li><li>autocomplete</li><li>✦</li><li>works offline</li><li>✦</li><li>your own key</li><li>✦</li>
+        </ul>
+      </div>
+    </div>
+
     <!-- 01 Why -->
-    <section id="why" aria-labelledby="why-title" class="border-b border-line">
-      <div class="mx-auto max-w-page px-4 py-20 sm:px-8">
-        <h2 id="why-title" class="text-balance flex items-baseline gap-3 font-mono text-2xl font-bold"><span class="text-sm font-normal text-dim">01</span>Why an AI document editor</h2>
-        <p class="mt-5 max-w-3xl leading-relaxed text-soft">
-          Most AI writing today happens in a chat window: you copy text out of your document, paste it into a chatbot,
-          then copy the answer back and fix the formatting it broke. The AI never sees the whole document, never knows
-          your other files, and every change is all-or-nothing. This editor puts the AI where the writing already is.
+    <section id="why" aria-labelledby="why-title" class="border-b border-ink">
+      <div class="mx-auto max-w-page px-4 py-24 sm:px-8">
+        <div class="flex items-end gap-5">
+          <span class="font-outline text-6xl font-bold leading-none text-transparent [-webkit-text-stroke:1.5px_#fff] sm:text-8xl" aria-hidden="true">01</span>
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-dim">// the problem</p>
+            <h2 id="why-title" class="mt-2 text-balance font-mono text-2xl font-bold sm:text-4xl">Why an AI document editor</h2>
+          </div>
+        </div>
+        <p class="mt-8 max-w-3xl text-lg leading-relaxed text-soft">
+          Most AI writing still happens in a chat window, away from the document. The AI never sees the whole file,
+          never knows your other files, and every answer is all-or-nothing.
         </p>
-        <div class="mt-10 grid grid-cols-1 border-l border-t border-line sm:grid-cols-3">
-          <div class="border-b border-r border-line p-6">
-            <h3 class="font-mono font-bold">It sees your document</h3>
-            <p class="mt-2 text-sm leading-relaxed text-soft">The assistant reads the document you have open, its structure and its formatting, so “make the budget section formal” just works.</p>
+
+        <div class="mt-12 grid grid-cols-1 border border-ink md:grid-cols-2">
+          <div class="border-b border-ink p-6 sm:p-8 md:border-b-0 md:border-r">
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-dim">the chatbot way</p>
+            <ol class="mt-5 space-y-3 font-mono text-sm text-soft">
+              <li class="flex gap-3"><span class="text-dim" aria-hidden="true">✕</span><span class="line-through decoration-dim">Copy text out of your document</span></li>
+              <li class="flex gap-3"><span class="text-dim" aria-hidden="true">✕</span><span class="line-through decoration-dim">Paste it into a chatbot</span></li>
+              <li class="flex gap-3"><span class="text-dim" aria-hidden="true">✕</span><span class="line-through decoration-dim">Copy the answer back</span></li>
+              <li class="flex gap-3"><span class="text-dim" aria-hidden="true">✕</span><span class="line-through decoration-dim">Fix the formatting it broke</span></li>
+              <li class="flex gap-3"><span class="text-dim" aria-hidden="true">✕</span><span class="line-through decoration-dim">Repeat for every change</span></li>
+            </ol>
           </div>
-          <div class="border-b border-r border-line p-6">
-            <h3 class="font-mono font-bold">You stay the editor</h3>
-            <p class="mt-2 text-sm leading-relaxed text-soft">AI edits arrive as suggestions. Accept or reject each paragraph; unchanged text keeps its formatting; one undo puts everything back.</p>
+          <div class="bg-ink p-6 text-ground sm:p-8">
+            <p class="font-mono text-xs uppercase tracking-[0.2em]">this editor</p>
+            <ol class="mt-5 space-y-3 font-mono text-sm font-bold">
+              <li class="flex gap-3"><span aria-hidden="true">✓</span><span>Ask right where you write</span></li>
+              <li class="flex gap-3"><span aria-hidden="true">✓</span><span>The AI sees the whole document</span></li>
+              <li class="flex gap-3"><span aria-hidden="true">✓</span><span>Changes are marked word by word</span></li>
+              <li class="flex gap-3"><span aria-hidden="true">✓</span><span>Accept or reject each one</span></li>
+              <li class="flex gap-3"><span aria-hidden="true">✓</span><span>Formatting kept; one undo puts it back</span></li>
+            </ol>
           </div>
-          <div class="border-b border-r border-line p-6">
-            <h3 class="font-mono font-bold">Your files stay yours</h3>
-            <p class="mt-2 text-sm leading-relaxed text-soft">Documents and accounts live on your PC. Text goes only to the AI provider you pick, with your key, when you use AI.</p>
+        </div>
+
+        <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
+          <div class="border border-ink p-6 shadow-hard">
+            <p class="font-mono text-3xl" aria-hidden="true">◉</p>
+            <h3 class="mt-4 font-mono font-bold">It sees your document</h3>
+            <p class="mt-2 text-sm leading-relaxed text-soft">Its structure and formatting too, so “make the budget section formal” just works.</p>
+          </div>
+          <div class="border border-ink p-6 shadow-hard">
+            <p class="font-mono text-3xl" aria-hidden="true">✎</p>
+            <h3 class="mt-4 font-mono font-bold">You stay the editor</h3>
+            <p class="mt-2 text-sm leading-relaxed text-soft">AI edits arrive as suggestions. Nothing changes until you accept it.</p>
+          </div>
+          <div class="border border-ink p-6 shadow-hard">
+            <p class="font-mono text-3xl" aria-hidden="true">⌂</p>
+            <h3 class="mt-4 font-mono font-bold">Your files stay yours</h3>
+            <p class="mt-2 text-sm leading-relaxed text-soft">Documents and accounts live on your PC. Text goes only to the AI provider you pick.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 02 Why AI -->
-    <section aria-labelledby="whyai-title" class="border-b border-line">
-      <div class="mx-auto max-w-page px-4 py-20 sm:px-8">
-        <h2 id="whyai-title" class="text-balance flex items-baseline gap-3 font-mono text-2xl font-bold"><span class="text-sm font-normal text-dim">02</span>Why AI belongs in it</h2>
-        <p class="mt-5 max-w-3xl leading-relaxed text-soft">
-          The slow part of writing is rarely typing. It is the blank page, the rewrite in a different tone, finding the
-          one figure buried in a 90-page contract, and checking a draft before it goes out. Those are the jobs the AI
-          does here, each with its own tool.
+    <!-- 02 Why AI (inverted: white) -->
+    <section aria-labelledby="whyai-title" class="border-b border-ink bg-ink bg-dots bg-dots text-ground">
+      <div class="mx-auto max-w-page px-4 py-24 sm:px-8">
+        <div class="flex items-end gap-5">
+          <span class="font-outline text-6xl font-bold leading-none text-transparent [-webkit-text-stroke:1.5px_#000] sm:text-8xl" aria-hidden="true">02</span>
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-[#4d4d4d]">// the reason</p>
+            <h2 id="whyai-title" class="mt-2 text-balance font-mono text-2xl font-bold sm:text-4xl">Why AI belongs in it</h2>
+          </div>
+        </div>
+        <p class="mt-8 max-w-3xl text-lg leading-relaxed text-[#333]">
+          The slow part of writing is rarely typing. It’s the blank page, the rewrite in another tone, the one figure
+          buried in a 90-page contract. Each of those jobs gets its own AI tool.
         </p>
-        <div class="mt-10 overflow-x-auto border border-line">
+        <div class="mt-12 overflow-x-auto border-2 border-ground bg-ink shadow-hard-ink">
           <table class="w-full min-w-[36rem] text-left text-sm">
-            <thead class="border-b border-line font-mono text-xs uppercase tracking-wider text-dim">
-              <tr><th scope="col" class="px-4 py-3 font-normal">The job</th><th scope="col" class="px-4 py-3 font-normal">The tool</th><th scope="col" class="px-4 py-3 font-normal">What you do</th></tr>
+            <thead class="bg-ground font-mono text-xs uppercase tracking-wider text-ink">
+              <tr><th scope="col" class="px-4 py-3 font-bold">The job</th><th scope="col" class="px-4 py-3 font-bold">The tool</th><th scope="col" class="px-4 py-3 font-bold">What you do</th></tr>
             </thead>
-            <tbody class="divide-y divide-line text-soft">
-              <tr><td class="px-4 py-3 text-ink">A first draft of a whole document</td><td class="px-4 py-3 font-mono">Studio</td><td class="px-4 py-3">Answer a short brief; a team of agents writes and reviews it</td></tr>
-              <tr><td class="px-4 py-3 text-ink">Rewrite, shorten, translate, fix grammar</td><td class="px-4 py-3 font-mono">/ commands</td><td class="px-4 py-3">Type <code class="text-ink">/</code> in the paragraph and pick an action</td></tr>
-              <tr><td class="px-4 py-3 text-ink">Change the document by describing it</td><td class="px-4 py-3 font-mono">AI chat</td><td class="px-4 py-3">Ask in the assistant; review the changes it proposes</td></tr>
-              <tr><td class="px-4 py-3 text-ink">Answer a question from one long document</td><td class="px-4 py-3 font-mono">Deep read (RLM)</td><td class="px-4 py-3">Switch the chat to Deep read and ask</td></tr>
-              <tr><td class="px-4 py-3 text-ink">Find facts across all your files</td><td class="px-4 py-3 font-mono">Search (RAG)</td><td class="px-4 py-3">Switch the chat to All my documents and ask</td></tr>
-              <tr><td class="px-4 py-3 text-ink">Keep writing without stopping</td><td class="px-4 py-3 font-mono">Autocomplete</td><td class="px-4 py-3">Turn it on; press Tab to accept the grey suggestion</td></tr>
+            <tbody class="divide-y divide-ground/20">
+              <tr><td class="px-4 py-3.5 font-medium">A first draft of a whole document</td><td class="px-4 py-3.5 font-mono font-bold">Studio</td><td class="px-4 py-3.5 text-[#333]">Answer a short brief; a team of agents writes and reviews it</td></tr>
+              <tr><td class="px-4 py-3.5 font-medium">Rewrite, shorten, translate, fix grammar</td><td class="px-4 py-3.5 font-mono font-bold">/ commands</td><td class="px-4 py-3.5 text-[#333]">Type <code class="font-bold">/</code> in the paragraph and pick an action</td></tr>
+              <tr><td class="px-4 py-3.5 font-medium">Change the document by describing it</td><td class="px-4 py-3.5 font-mono font-bold">AI chat</td><td class="px-4 py-3.5 text-[#333]">Ask in the assistant; review the changes it proposes</td></tr>
+              <tr><td class="px-4 py-3.5 font-medium">Answer a question from one long document</td><td class="px-4 py-3.5 font-mono font-bold">Deep read · RLM</td><td class="px-4 py-3.5 text-[#333]">Switch the chat to Deep read and ask</td></tr>
+              <tr><td class="px-4 py-3.5 font-medium">Find facts across all your files</td><td class="px-4 py-3.5 font-mono font-bold">Search · RAG</td><td class="px-4 py-3.5 text-[#333]">Switch the chat to All my documents and ask</td></tr>
+              <tr><td class="px-4 py-3.5 font-medium">Keep writing without stopping</td><td class="px-4 py-3.5 font-mono font-bold">Autocomplete</td><td class="px-4 py-3.5 text-[#333]">Turn it on; press Tab to take the suggestion</td></tr>
             </tbody>
           </table>
         </div>
@@ -134,259 +193,324 @@
     </section>
 
     <!-- 03 What you get -->
-    <section id="features" aria-labelledby="features-title" class="border-b border-line">
-      <div class="mx-auto max-w-page px-4 py-20 sm:px-8">
-        <h2 id="features-title" class="text-balance flex items-baseline gap-3 font-mono text-2xl font-bold"><span class="text-sm font-normal text-dim">03</span>What you get</h2>
-        <div class="mt-10 grid grid-cols-1 border-l border-t border-line sm:grid-cols-2 lg:grid-cols-4">
-          <div class="border-b border-r border-line p-5"><h3 class="font-mono text-sm font-bold">Word-style editor</h3><p class="mt-2 text-sm leading-relaxed text-soft">Styles, fonts, lists, find and replace, format painter, autosave.</p></div>
-          <div class="border-b border-r border-line p-5"><h3 class="font-mono text-sm font-bold">Open and save files</h3><p class="mt-2 text-sm leading-relaxed text-soft">Open Word, PDF and text files; save as Word.</p></div>
-          <div class="border-b border-r border-line p-5"><h3 class="font-mono text-sm font-bold">Reviewable AI edits</h3><p class="mt-2 text-sm leading-relaxed text-soft">Word-level changes you accept or reject, paragraph by paragraph.</p></div>
-          <div class="border-b border-r border-line p-5"><h3 class="font-mono text-sm font-bold">/ commands</h3><p class="mt-2 text-sm leading-relaxed text-soft">Ten AI actions and quick blocks, right in the line you’re on.</p></div>
-          <div class="border-b border-r border-line p-5"><h3 class="font-mono text-sm font-bold">Studio</h3><p class="mt-2 text-sm leading-relaxed text-soft">A team of specialist writer and reviewer agents for 11 professions.</p></div>
-          <div class="border-b border-r border-line p-5"><h3 class="font-mono text-sm font-bold">Deep read (RLM)</h3><p class="mt-2 text-sm leading-relaxed text-soft">The AI reads the whole text with code, not a few snippets.</p></div>
-          <div class="border-b border-r border-line p-5"><h3 class="font-mono text-sm font-bold">Search (RAG)</h3><p class="mt-2 text-sm leading-relaxed text-soft">Answers across all your files, with numbered, clickable sources.</p></div>
-          <div class="border-b border-r border-line p-5"><h3 class="font-mono text-sm font-bold">Many AI providers</h3><p class="mt-2 text-sm leading-relaxed text-soft">Gemini, OpenAI, Claude, Groq, Mistral, DeepSeek, OpenRouter and any OpenAI-compatible API.</p></div>
+    <section id="features" aria-labelledby="features-title" class="border-b border-ink">
+      <div class="mx-auto max-w-page px-4 py-24 sm:px-8">
+        <div class="flex items-end gap-5">
+          <span class="font-outline text-6xl font-bold leading-none text-transparent [-webkit-text-stroke:1.5px_#fff] sm:text-8xl" aria-hidden="true">03</span>
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-dim">// in the box</p>
+            <h2 id="features-title" class="mt-2 text-balance font-mono text-2xl font-bold sm:text-4xl">What you get</h2>
+          </div>
+        </div>
+        <div class="mt-12 grid grid-cols-1 border-l border-t border-ink sm:grid-cols-2 lg:grid-cols-4">
+          <div class="group/c border-b border-r border-ink p-6 transition-colors hover:bg-ink hover:text-ground"><p class="grid h-11 w-11 place-items-center border border-current font-mono text-xl" aria-hidden="true">¶</p><h3 class="mt-5 font-mono font-bold">Word-style editor</h3><p class="mt-2 text-sm leading-relaxed text-soft group-hover/c:text-[#333]">Styles, fonts, lists, find and replace, format painter, autosave.</p></div>
+          <div class="group/c border-b border-r border-ink p-6 transition-colors hover:bg-ink hover:text-ground"><p class="grid h-11 w-11 place-items-center border border-current font-mono text-xl" aria-hidden="true">⇅</p><h3 class="mt-5 font-mono font-bold">Open and save files</h3><p class="mt-2 text-sm leading-relaxed text-soft group-hover/c:text-[#333]">Open Word, PDF and text files; save as Word.</p></div>
+          <div class="group/c border-b border-r border-ink p-6 transition-colors hover:bg-ink hover:text-ground"><p class="grid h-11 w-11 place-items-center border border-current font-mono text-xl" aria-hidden="true">±</p><h3 class="mt-5 font-mono font-bold">Reviewable edits</h3><p class="mt-2 text-sm leading-relaxed text-soft group-hover/c:text-[#333]">Word-level changes you accept or reject, paragraph by paragraph.</p></div>
+          <div class="group/c border-b border-r border-ink p-6 transition-colors hover:bg-ink hover:text-ground"><p class="grid h-11 w-11 place-items-center border border-current font-mono text-xl" aria-hidden="true">/</p><h3 class="mt-5 font-mono font-bold">/ commands</h3><p class="mt-2 text-sm leading-relaxed text-soft group-hover/c:text-[#333]">Ten AI actions and quick blocks, right in the line you’re on.</p></div>
+          <div class="group/c border-b border-r border-ink p-6 transition-colors hover:bg-ink hover:text-ground"><p class="grid h-11 w-11 place-items-center border border-current font-mono text-xl" aria-hidden="true">✦</p><h3 class="mt-5 font-mono font-bold">Studio</h3><p class="mt-2 text-sm leading-relaxed text-soft group-hover/c:text-[#333]">Specialist writer and reviewer agents for 11 professions.</p></div>
+          <div class="group/c border-b border-r border-ink p-6 transition-colors hover:bg-ink hover:text-ground"><p class="grid h-11 w-11 place-items-center border border-current font-mono text-xl" aria-hidden="true">∞</p><h3 class="mt-5 font-mono font-bold">Deep read · RLM</h3><p class="mt-2 text-sm leading-relaxed text-soft group-hover/c:text-[#333]">The AI reads the whole text with code, not a few snippets.</p></div>
+          <div class="group/c border-b border-r border-ink p-6 transition-colors hover:bg-ink hover:text-ground"><p class="grid h-11 w-11 place-items-center border border-current font-mono text-xl" aria-hidden="true">⌕</p><h3 class="mt-5 font-mono font-bold">Search · RAG</h3><p class="mt-2 text-sm leading-relaxed text-soft group-hover/c:text-[#333]">Answers across all your files, with numbered, clickable sources.</p></div>
+          <div class="group/c border-b border-r border-ink p-6 transition-colors hover:bg-ink hover:text-ground"><p class="grid h-11 w-11 place-items-center border border-current font-mono text-xl" aria-hidden="true">⚿</p><h3 class="mt-5 font-mono font-bold">Many AI providers</h3><p class="mt-2 text-sm leading-relaxed text-soft group-hover/c:text-[#333]">Gemini, OpenAI, Claude, Groq, Mistral, DeepSeek, OpenRouter and more.</p></div>
         </div>
       </div>
     </section>
 
     <!-- 04 How to use each AI feature (tabs without JavaScript: radio buttons styled as tabs) -->
-    <section id="guide" aria-labelledby="guide-title" class="border-b border-line">
-      <div class="group mx-auto max-w-page px-4 py-20 sm:px-8">
-        <h2 id="guide-title" class="text-balance flex items-baseline gap-3 font-mono text-2xl font-bold"><span class="text-sm font-normal text-dim">04</span>The AI features, one at a time</h2>
-        <p class="mt-5 max-w-3xl leading-relaxed text-soft">Pick a feature to see what it does, when to use it, how many AI requests it makes, and how to use it.</p>
+    <section id="guide" aria-labelledby="guide-title" class="border-b border-ink">
+      <div class="group mx-auto max-w-page px-4 py-24 sm:px-8">
+        <div class="flex items-end gap-5">
+          <span class="font-outline text-6xl font-bold leading-none text-transparent [-webkit-text-stroke:1.5px_#fff] sm:text-8xl" aria-hidden="true">04</span>
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-dim">// how to use</p>
+            <h2 id="guide-title" class="mt-2 text-balance font-mono text-2xl font-bold sm:text-4xl">The AI features, one at a time</h2>
+          </div>
+        </div>
+        <p class="mt-8 max-w-3xl text-lg leading-relaxed text-soft">Pick a feature: what it does, when to use it, how many AI requests it makes, and how to use it.</p>
 
-        <fieldset class="mt-8">
+        <fieldset class="mt-10">
           <legend class="sr-only">AI feature</legend>
-          <div class="flex flex-wrap border-l border-t border-line font-mono text-sm">
-            <label class="cursor-pointer border-b border-r border-line px-3 py-2 text-soft hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-chat" class="sr-only" checked>chat &amp; review</label>
-            <label class="cursor-pointer border-b border-r border-line px-3 py-2 text-soft hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-slash" class="sr-only">/ commands</label>
-            <label class="cursor-pointer border-b border-r border-line px-3 py-2 text-soft hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-studio" class="sr-only">studio</label>
-            <label class="cursor-pointer border-b border-r border-line px-3 py-2 text-soft hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-rlm" class="sr-only">deep read · rlm</label>
-            <label class="cursor-pointer border-b border-r border-line px-3 py-2 text-soft hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-rag" class="sr-only">search · rag</label>
-            <label class="cursor-pointer border-b border-r border-line px-3 py-2 text-soft hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-complete" class="sr-only">autocomplete</label>
+          <div class="flex flex-wrap border-l border-t border-ink font-mono text-sm">
+            <label class="cursor-pointer border-b border-r border-ink px-4 py-2.5 text-soft hover:bg-raised hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-chat" class="sr-only" checked>chat &amp; review</label>
+            <label class="cursor-pointer border-b border-r border-ink px-4 py-2.5 text-soft hover:bg-raised hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-slash" class="sr-only">/ commands</label>
+            <label class="cursor-pointer border-b border-r border-ink px-4 py-2.5 text-soft hover:bg-raised hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-studio" class="sr-only">studio</label>
+            <label class="cursor-pointer border-b border-r border-ink px-4 py-2.5 text-soft hover:bg-raised hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-rlm" class="sr-only">deep read · rlm</label>
+            <label class="cursor-pointer border-b border-r border-ink px-4 py-2.5 text-soft hover:bg-raised hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-rag" class="sr-only">search · rag</label>
+            <label class="cursor-pointer border-b border-r border-ink px-4 py-2.5 text-soft hover:bg-raised hover:text-ink has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-ground has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"><input type="radio" name="feature" id="f-complete" class="sr-only">autocomplete</label>
           </div>
         </fieldset>
 
         <!-- chat & review -->
-        <article class="hidden border-x border-b border-line group-has-[#f-chat:checked]:block">
-          <div class="border-b border-line p-6">
-            <h3 class="font-mono text-lg font-bold">Chat and review</h3>
-            <p class="mt-2 max-w-3xl leading-relaxed text-soft">The assistant on the right reads your open document. Questions are answered in the chat; requests to change the document come back as suggested changes you review before anything is applied.</p>
+        <article class="mt-6 hidden border border-ink shadow-hard-line group-has-[#f-chat:checked]:block">
+          <div class="border-b border-ink bg-ink p-6 text-ground sm:p-8">
+            <p class="font-mono text-xs uppercase tracking-[0.2em]">feature 1 / 6</p>
+            <h3 class="mt-2 font-mono text-2xl font-bold">Chat and review</h3>
+            <p class="mt-3 max-w-3xl leading-relaxed text-[#333]">The assistant on the right reads your open document. Questions are answered in the chat; requests to change the document come back as suggested changes you review before anything is applied.</p>
           </div>
           <dl class="grid grid-cols-1 border-b border-line sm:grid-cols-2">
-            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">Use it when</dt><dd class="mt-2 text-soft">“Make this more formal”, “add a section on risks”, “what does clause 4 mean?”</dd></div>
-            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-ink">1 per message</dd></div>
+            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">use it when</dt><dd class="mt-2 text-soft">“Make this more formal”, “add a section on risks”, “what does clause 4 mean?”</dd></div>
+            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-2xl font-bold">1 <span class="text-sm font-normal text-soft">per message</span></dd></div>
           </dl>
-          <div class="p-6">
-            <h4 class="font-mono text-xs uppercase tracking-wider text-dim">How to use it</h4>
-            <ol class="mt-3 list-decimal space-y-2 pl-5 leading-relaxed text-soft marker:font-mono marker:text-dim">
-              <li>Type in the message box at the bottom of the assistant and press Enter.</li>
-              <li>For an edit, a review panel opens above the document with each change marked word by word.</li>
-              <li>Accept or reject each change, or click <span class="text-ink">Accept all</span>. One undo (Ctrl+Z) reverts the whole edit.</li>
-              <li>Select any text to get quick actions too: Improve Grammar, Make Concise, Add Detail, Formal or Friendly Tone, Summarize.</li>
+          <div class="p-6 sm:p-8">
+            <h4 class="font-mono text-xs uppercase tracking-wider text-dim">how to use it</h4>
+            <ol class="mt-4 space-y-3 leading-relaxed text-soft">
+              <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">1</span><span>Type in the message box at the bottom of the assistant and press Enter.</span></li>
+              <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">2</span><span>For an edit, a review panel opens above the document with each change marked word by word.</span></li>
+              <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">3</span><span>Accept or reject each change, or click <b class="font-semibold text-ink">Accept all</b>. One undo (Ctrl+Z) reverts the whole edit.</span></li>
+              <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">4</span><span>Select any text for quick actions too: Improve Grammar, Make Concise, Add Detail, Formal or Friendly Tone, Summarize.</span></li>
             </ol>
           </div>
         </article>
 
         <!-- / commands -->
-        <article class="hidden border-x border-b border-line group-has-[#f-slash:checked]:block">
-          <div class="border-b border-line p-6">
-            <h3 class="font-mono text-lg font-bold">/ commands</h3>
-            <p class="mt-2 max-w-3xl leading-relaxed text-soft">Type <code class="text-ink">/</code> in any paragraph for a menu of AI actions and quick blocks. The AI works on that paragraph and shows its result in a card before it touches your text.</p>
+        <article class="mt-6 hidden border border-ink shadow-hard-line group-has-[#f-slash:checked]:block">
+          <div class="border-b border-ink bg-ink p-6 text-ground sm:p-8">
+            <p class="font-mono text-xs uppercase tracking-[0.2em]">feature 2 / 6</p>
+            <h3 class="mt-2 font-mono text-2xl font-bold">/ commands</h3>
+            <p class="mt-3 max-w-3xl leading-relaxed text-[#333]">Type <code class="font-bold text-ground">/</code> in any paragraph for a menu of AI actions and quick blocks. The AI works on that paragraph and shows its result in a card before it touches your text.</p>
           </div>
           <dl class="grid grid-cols-1 border-b border-line sm:grid-cols-2">
-            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI actions</dt><dd class="mt-2 font-mono text-sm leading-relaxed text-soft">continue · improve · fix grammar · shorter · longer · formal · translate · summarize · table · ask</dd></div>
-            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-ink">1 per command</dd></div>
+            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI actions</dt><dd class="mt-3 flex flex-wrap gap-2 font-mono text-xs"><span class="border border-line px-2 py-1">continue</span><span class="border border-line px-2 py-1">improve</span><span class="border border-line px-2 py-1">fix grammar</span><span class="border border-line px-2 py-1">shorter</span><span class="border border-line px-2 py-1">longer</span><span class="border border-line px-2 py-1">formal</span><span class="border border-line px-2 py-1">translate</span><span class="border border-line px-2 py-1">summarize</span><span class="border border-line px-2 py-1">table</span><span class="border border-line px-2 py-1">ask</span></dd></div>
+            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-2xl font-bold">1 <span class="text-sm font-normal text-soft">per command</span></dd></div>
           </dl>
-          <div class="p-6">
-            <h4 class="font-mono text-xs uppercase tracking-wider text-dim">How to use it</h4>
-            <ol class="mt-3 list-decimal space-y-2 pl-5 leading-relaxed text-soft marker:font-mono marker:text-dim">
-              <li>In the paragraph you want to change, type <code class="text-ink">/</code> and a few letters to filter, e.g. <code class="text-ink">/impr</code>.</li>
-              <li>Press Enter. Add words for the commands that take them: <code class="text-ink">/translate hindi</code>, <code class="text-ink">/table monthly budget by team</code>, <code class="text-ink">/ask write an intro</code>.</li>
-              <li>The result streams into a card: click <span class="text-ink">Replace</span> or <span class="text-ink">Insert below</span>.</li>
+          <div class="p-6 sm:p-8">
+            <h4 class="font-mono text-xs uppercase tracking-wider text-dim">how to use it</h4>
+            <ol class="mt-4 space-y-3 leading-relaxed text-soft">
+              <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">1</span><span>In the paragraph you want to change, type <code class="text-ink">/</code> and a few letters to filter, e.g. <code class="text-ink">/impr</code>.</span></li>
+              <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">2</span><span>Press Enter. Add words for the commands that take them: <code class="text-ink">/translate hindi</code>, <code class="text-ink">/table monthly budget by team</code>, <code class="text-ink">/ask write an intro</code>.</span></li>
+              <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">3</span><span>The result streams into a card: click <b class="font-semibold text-ink">Replace</b> or <b class="font-semibold text-ink">Insert below</b>.</span></li>
             </ol>
           </div>
         </article>
 
         <!-- Studio -->
-        <article class="hidden border-x border-b border-line group-has-[#f-studio:checked]:block">
-          <div class="border-b border-line p-6">
-            <h3 class="font-mono text-lg font-bold">Studio: a writing team</h3>
-            <p class="mt-2 max-w-3xl leading-relaxed text-soft">Pick a profession and a team of AI agents writes the whole document. A lead editor plans the sections, a specialist writes each one in its own craft, reviewers check the draft against their checklist, and flagged sections are revised. You watch it happen.</p>
+        <article class="mt-6 hidden border border-ink shadow-hard-line group-has-[#f-studio:checked]:block">
+          <div class="border-b border-ink bg-ink p-6 text-ground sm:p-8">
+            <p class="font-mono text-xs uppercase tracking-[0.2em]">feature 3 / 6</p>
+            <h3 class="mt-2 font-mono text-2xl font-bold">Studio: a writing team</h3>
+            <p class="mt-3 max-w-3xl leading-relaxed text-[#333]">Pick a profession and a team of AI agents writes the whole document. A lead editor plans the sections, a specialist writes each one in its own craft, reviewers check the draft against their checklist, and flagged sections are revised. You watch it happen.</p>
           </div>
           <dl class="grid grid-cols-1 border-b border-line sm:grid-cols-3">
-            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">Professions</dt><dd class="mt-2 text-sm leading-relaxed text-soft">legal · medical · reports · research · news · articles · social media · film &amp; TV · YouTube · reels · courses</dd></div>
-            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">Use it when</dt><dd class="mt-2 text-sm leading-relaxed text-soft">You need a complete first draft: a contract, a report, a script, a course outline.</dd></div>
-            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-sm leading-relaxed text-ink">Draft: 1 + 1 per section<br>Review and revise: up to 1 + 2 per section + 1 per reviewer</dd></div>
+            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">professions</dt><dd class="mt-2 text-sm leading-relaxed text-soft">legal · medical · reports · research · news · articles · social media · film &amp; TV · YouTube · reels · courses</dd></div>
+            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">use it when</dt><dd class="mt-2 text-sm leading-relaxed text-soft">You need a complete first draft: a contract, a report, a script, a course outline.</dd></div>
+            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-sm leading-relaxed"><b>Draft:</b> 1 + 1 per section<br><b>Review and revise:</b> up to 1 + 2 per section + 1 per reviewer</dd></div>
           </dl>
           <div class="grid grid-cols-1 lg:grid-cols-2">
-            <div class="border-b border-line p-6 lg:border-b-0 lg:border-r">
-              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">How to use it</h4>
-              <ol class="mt-3 list-decimal space-y-2 pl-5 leading-relaxed text-soft marker:font-mono marker:text-dim">
-                <li>Click the chat options under the message box (<span class="text-ink">This document · Quick</span>) and choose <span class="text-ink">Write a whole document</span>.</li>
-                <li>Pick a profession on the left and a document type, and answer the brief.</li>
-                <li>Optionally tick source files: facts from them are cited as [1], [2] and listed under Sources.</li>
-                <li>Choose <span class="text-ink">Draft</span>, or <span class="text-ink">Draft, review and revise</span> for the reviewers’ pass, then <span class="text-ink">Write it</span>.</li>
-                <li>When it’s done, <span class="text-ink">Add to my document</span>. If the document isn’t empty, it arrives as a review.</li>
+            <div class="border-b border-line p-6 sm:p-8 lg:border-b-0 lg:border-r">
+              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">how to use it</h4>
+              <ol class="mt-4 space-y-3 leading-relaxed text-soft">
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">1</span><span>Click the chat options under the message box (<b class="font-semibold text-ink">This document · Quick</b>) and choose <b class="font-semibold text-ink">Write a whole document</b>.</span></li>
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">2</span><span>Pick a profession on the left and a document type, and answer the brief.</span></li>
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">3</span><span>Optionally tick source files: facts from them are cited as [1], [2] and listed under Sources.</span></li>
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">4</span><span>Choose <b class="font-semibold text-ink">Draft</b>, or <b class="font-semibold text-ink">Draft, review and revise</b> for the reviewers’ pass, then <b class="font-semibold text-ink">Write it</b>.</span></li>
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">5</span><span>When it’s done, <b class="font-semibold text-ink">Add to my document</b>. If the document isn’t empty, it arrives as a review.</span></li>
               </ol>
             </div>
-            <div class="p-6">
-              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">Who works on a report</h4>
-              <pre class="mt-3 overflow-x-auto border border-line bg-surface p-4 font-mono text-xs leading-relaxed text-soft"><span class="text-ink">lead editor</span>     plans the sections and assigns each one
-<span class="text-ink">specialists</span>     each writes the sections in its craft
-<span class="text-ink">reviewers</span>       check claims, gaps and clarity
-<span class="text-ink">→ revise</span>        flagged sections rewritten</pre>
+            <div class="p-6 sm:p-8">
+              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">the team</h4>
+              <ol class="mt-4 font-mono text-sm">
+                <li class="border border-ink bg-ink px-4 py-3 font-bold text-ground">lead editor <span class="block text-xs font-normal text-[#333]">plans the sections, assigns each one</span></li>
+                <li class="py-1 pl-6 text-dim" aria-hidden="true">↓</li>
+                <li class="border border-ink px-4 py-3 font-bold">specialists <span class="block text-xs font-normal text-soft">each writes its sections in its craft</span></li>
+                <li class="py-1 pl-6 text-dim" aria-hidden="true">↓</li>
+                <li class="border border-ink px-4 py-3 font-bold">reviewers <span class="block text-xs font-normal text-soft">check claims, gaps and clarity</span></li>
+                <li class="py-1 pl-6 text-dim" aria-hidden="true">↓</li>
+                <li class="border border-dashed border-ink px-4 py-3 font-bold">revise <span class="block text-xs font-normal text-soft">flagged sections rewritten</span></li>
+              </ol>
             </div>
           </div>
         </article>
 
         <!-- Deep read / RLM -->
-        <article class="hidden border-x border-b border-line group-has-[#f-rlm:checked]:block">
-          <div class="border-b border-line p-6">
-            <h3 class="font-mono text-lg font-bold">Deep read (RLM, recursive language model)</h3>
-            <p class="mt-2 max-w-3xl leading-relaxed text-soft">Normal AI chat only sees the parts of a long document that fit in one prompt. Deep read gives the model the <em>whole</em> text as a variable in a sandbox. It writes small programs to look around (search, slice, split into chunks), hands pieces to helper model calls, and combines what they find. Short texts (under about 24,000 characters) are simply read in one pass.</p>
+        <article class="mt-6 hidden border border-ink shadow-hard-line group-has-[#f-rlm:checked]:block">
+          <div class="border-b border-ink bg-ink p-6 text-ground sm:p-8">
+            <p class="font-mono text-xs uppercase tracking-[0.2em]">feature 4 / 6</p>
+            <h3 class="mt-2 font-mono text-2xl font-bold">Deep read · RLM</h3>
+            <p class="mt-1 font-mono text-xs uppercase tracking-wider text-[#4d4d4d]">recursive language model</p>
+            <p class="mt-3 max-w-3xl leading-relaxed text-[#333]">Normal AI chat only sees the parts of a long document that fit in one prompt. Deep read gives the model the <em>whole</em> text as a variable in a sandbox. It writes small programs to look around (search, slice, split into chunks), hands pieces to helper model calls, and combines what they find. Short texts (under about 24,000 characters) are simply read in one pass.</p>
           </div>
           <dl class="grid grid-cols-1 border-b border-line sm:grid-cols-2">
-            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">Use it when</dt><dd class="mt-2 text-soft">“Summarise this 120-page report”, “list every deadline”, “compare section 2 with section 7”.</dd></div>
-            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-sm leading-relaxed text-ink">1 for short texts<br>long texts: up to 8 steps + 24 helper reads</dd></div>
+            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">use it when</dt><dd class="mt-2 text-soft">“Summarise this 120-page report”, “list every deadline”, “compare section 2 with section 7”.</dd></div>
+            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-sm leading-relaxed"><b>Short texts:</b> 1<br><b>Long texts:</b> up to 8 steps + 24 helper reads</dd></div>
           </dl>
           <div class="grid grid-cols-1 lg:grid-cols-2">
-            <div class="border-b border-line p-6 lg:border-b-0 lg:border-r">
-              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">How to use it</h4>
-              <ol class="mt-3 list-decimal space-y-2 pl-5 leading-relaxed text-soft marker:font-mono marker:text-dim">
-                <li>Open the long document.</li>
-                <li>Click the chat options (<span class="text-ink">This document · Quick</span>) and pick <span class="text-ink">Deep read</span> under Reading mode.</li>
-                <li>Ask your question. A line shows each step as it reads.</li>
-                <li>Under the answer, <span class="text-ink">Read with code</span> folds out the exact code it ran and what it printed.</li>
+            <div class="border-b border-line p-6 sm:p-8 lg:border-b-0 lg:border-r">
+              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">how to use it</h4>
+              <ol class="mt-4 space-y-3 leading-relaxed text-soft">
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">1</span><span>Open the long document.</span></li>
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">2</span><span>Click the chat options (<b class="font-semibold text-ink">This document · Quick</b>) and pick <b class="font-semibold text-ink">Deep read</b> under Reading mode.</span></li>
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">3</span><span>Ask your question. A line shows each step as it reads.</span></li>
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">4</span><span>Under the answer, <b class="font-semibold text-ink">Read with code</b> folds out the exact code it ran and what it printed.</span></li>
               </ol>
-              <p class="mt-4 text-sm leading-relaxed text-dim">The code runs in a locked sandbox: no files, no network, no imports, with time and size limits.</p>
+              <p class="mt-5 border-l-2 border-ink pl-4 text-sm leading-relaxed text-dim">The code runs in a locked sandbox: no files, no network, no imports, with time and size limits.</p>
             </div>
-            <div class="p-6">
-              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">What a step looks like</h4>
-              <pre class="mt-3 overflow-x-auto border border-line bg-surface p-4 font-mono text-xs leading-relaxed text-soft"><span class="text-dim"># the model writes this; the sandbox runs it</span>
+            <div class="p-6 sm:p-8">
+              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">what a step looks like</h4>
+              <div class="mt-4 border border-ink">
+                <p class="border-b border-ink px-4 py-2 font-mono text-xs text-dim">step 1 · sandbox</p>
+                <pre class="overflow-x-auto p-4 font-mono text-xs leading-relaxed text-soft"><span class="text-dim"># the model writes this; the sandbox runs it</span>
 parts = chunks(context, 20000)
 answers = llm_query_batch(
     [<span class="text-ink">"List every deadline:\n"</span> + p for p in parts])
 print(len(parts), answers)
 <span class="text-dim"># next step: combine the answers and finish</span></pre>
+              </div>
             </div>
           </div>
         </article>
 
         <!-- Search / RAG -->
-        <article class="hidden border-x border-b border-line group-has-[#f-rag:checked]:block">
-          <div class="border-b border-line p-6">
-            <h3 class="font-mono text-lg font-bold">Search across your documents (RAG, retrieval-augmented generation)</h3>
-            <p class="mt-2 max-w-3xl leading-relaxed text-soft">Every file you open or upload is split into passages. When you ask a question, the passages most relevant to it are found first, and only those are given to the AI, numbered. The answer cites them like [1] [2], so you can check every claim against the source.</p>
+        <article class="mt-6 hidden border border-ink shadow-hard-line group-has-[#f-rag:checked]:block">
+          <div class="border-b border-ink bg-ink p-6 text-ground sm:p-8">
+            <p class="font-mono text-xs uppercase tracking-[0.2em]">feature 5 / 6</p>
+            <h3 class="mt-2 font-mono text-2xl font-bold">Search · RAG</h3>
+            <p class="mt-1 font-mono text-xs uppercase tracking-wider text-[#4d4d4d]">retrieval-augmented generation</p>
+            <p class="mt-3 max-w-3xl leading-relaxed text-[#333]">Every file you open or upload is split into passages. When you ask a question, the passages most relevant to it are found first, and only those are given to the AI, numbered. The answer cites them like [1] [2], so you can check every claim against the source.</p>
           </div>
           <dl class="grid grid-cols-1 border-b border-line sm:grid-cols-2">
-            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">Use it when</dt><dd class="mt-2 text-soft">“What did we agree on payment terms?”, “which document mentions the Pune office?”</dd></div>
-            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-ink">1 per question</dd></div>
+            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">use it when</dt><dd class="mt-2 text-soft">“What did we agree on payment terms?”, “which document mentions the Pune office?”</dd></div>
+            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-2xl font-bold">1 <span class="text-sm font-normal text-soft">per question</span></dd></div>
           </dl>
           <div class="grid grid-cols-1 lg:grid-cols-2">
-            <div class="border-b border-line p-6 lg:border-b-0 lg:border-r">
-              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">How to use it</h4>
-              <ol class="mt-3 list-decimal space-y-2 pl-5 leading-relaxed text-soft marker:font-mono marker:text-dim">
-                <li>Open your files once with <span class="text-ink">File → Open a file</span> (Word, PDF, text).</li>
-                <li>In the chat options, choose <span class="text-ink">All my documents</span> under Reads.</li>
-                <li>Ask. Click a [1] in the answer, or a source under it, to see the exact passage.</li>
+            <div class="border-b border-line p-6 sm:p-8 lg:border-b-0 lg:border-r">
+              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">how to use it</h4>
+              <ol class="mt-4 space-y-3 leading-relaxed text-soft">
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">1</span><span>Open your files once with <b class="font-semibold text-ink">File → Open a file</b> (Word, PDF, text).</span></li>
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">2</span><span>In the chat options, choose <b class="font-semibold text-ink">All my documents</b> under Reads.</span></li>
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">3</span><span>Ask. Click a [1] in the answer, or a source under it, to see the exact passage.</span></li>
               </ol>
-              <p class="mt-4 text-sm leading-relaxed text-dim">In the Windows app, passages are ranked by keyword match, so use the words the document uses.</p>
+              <p class="mt-5 border-l-2 border-ink pl-4 text-sm leading-relaxed text-dim">In the Windows app, passages are ranked by keyword match, so use the words the document uses.</p>
             </div>
-            <div class="p-6">
-              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">RAG or deep read?</h4>
-              <pre class="mt-3 overflow-x-auto border border-line bg-surface p-4 font-mono text-xs leading-relaxed text-soft"><span class="text-ink">search · rag</span>   a fact that lives in a few passages,
-               across many files; fast, 1 request
-
-<span class="text-ink">deep read</span>      a question about the whole of one long
-               document; thorough, several requests</pre>
+            <div class="p-6 sm:p-8">
+              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">rag or deep read?</h4>
+              <div class="mt-4 grid grid-cols-1 border border-ink font-mono text-sm sm:grid-cols-2">
+                <div class="border-b border-ink bg-ink p-4 text-ground sm:border-b-0 sm:border-r"><p class="font-bold">search · rag</p><p class="mt-2 text-xs leading-relaxed text-[#333]">A fact that lives in a few passages, across many files. Fast, 1 request.</p></div>
+                <div class="p-4"><p class="font-bold">deep read</p><p class="mt-2 text-xs leading-relaxed text-soft">A question about the whole of one long document. Thorough, several requests.</p></div>
+              </div>
             </div>
           </div>
         </article>
 
         <!-- Autocomplete -->
-        <article class="hidden border-x border-b border-line group-has-[#f-complete:checked]:block">
-          <div class="border-b border-line p-6">
-            <h3 class="font-mono text-lg font-bold">Autocomplete</h3>
-            <p class="mt-2 max-w-3xl leading-relaxed text-soft">As you pause, the AI suggests how your sentence continues, in grey. Press Tab to take it, or keep typing to ignore it.</p>
+        <article class="mt-6 hidden border border-ink shadow-hard-line group-has-[#f-complete:checked]:block">
+          <div class="border-b border-ink bg-ink p-6 text-ground sm:p-8">
+            <p class="font-mono text-xs uppercase tracking-[0.2em]">feature 6 / 6</p>
+            <h3 class="mt-2 font-mono text-2xl font-bold">Autocomplete</h3>
+            <p class="mt-3 max-w-3xl leading-relaxed text-[#333]">As you pause, the AI suggests how your sentence continues, in grey. Press Tab to take it, or keep typing to ignore it.</p>
           </div>
           <dl class="grid grid-cols-1 border-b border-line sm:grid-cols-2">
-            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">Use it when</dt><dd class="mt-2 text-soft">Drafting quickly, when you know where a sentence is going.</dd></div>
-            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-ink">1 per suggestion</dd></div>
+            <div class="border-b border-line p-6 sm:border-b-0 sm:border-r"><dt class="font-mono text-xs uppercase tracking-wider text-dim">use it when</dt><dd class="mt-2 text-soft">Drafting quickly, when you know where a sentence is going.</dd></div>
+            <div class="p-6"><dt class="font-mono text-xs uppercase tracking-wider text-dim">AI requests</dt><dd class="mt-2 font-mono text-2xl font-bold">1 <span class="text-sm font-normal text-soft">per suggestion</span></dd></div>
           </dl>
-          <div class="p-6">
-            <h4 class="font-mono text-xs uppercase tracking-wider text-dim">How to use it</h4>
-            <ol class="mt-3 list-decimal space-y-2 pl-5 leading-relaxed text-soft marker:font-mono marker:text-dim">
-              <li>Open <span class="text-ink">More tools (⋯)</span> in the toolbar and turn on <span class="text-ink">AI autocomplete</span>.</li>
-              <li>Write, and pause at the end of a sentence. Press Tab to accept the suggestion.</li>
-              <li>It makes a request each time it suggests, so a free key’s per-minute limit runs out faster.</li>
-            </ol>
+          <div class="grid grid-cols-1 lg:grid-cols-2">
+            <div class="border-b border-line p-6 sm:p-8 lg:border-b-0 lg:border-r">
+              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">how to use it</h4>
+              <ol class="mt-4 space-y-3 leading-relaxed text-soft">
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">1</span><span>Open <b class="font-semibold text-ink">More tools (⋯)</b> in the toolbar and turn on <b class="font-semibold text-ink">AI autocomplete</b>.</span></li>
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">2</span><span>Write, and pause at the end of a sentence. Press Tab to accept the suggestion.</span></li>
+                <li class="flex gap-4"><span class="grid h-7 w-7 flex-none place-items-center border border-ink font-mono text-xs text-ink">3</span><span>Each suggestion is a request, so a free key’s per-minute limit runs out faster.</span></li>
+              </ol>
+            </div>
+            <div class="p-6 sm:p-8">
+              <h4 class="font-mono text-xs uppercase tracking-wider text-dim">what it looks like</h4>
+              <p class="mt-4 border border-ink p-5 leading-relaxed">The launch moves to March because <span class="text-dim">the vendor needs two more weeks for testing.</span><span class="ml-2 border border-line px-1.5 py-0.5 font-mono text-[10px] text-soft">Tab</span></p>
+            </div>
           </div>
         </article>
       </div>
     </section>
 
     <!-- 05 Where AI requests go -->
-    <section aria-labelledby="ai-path-title" class="border-b border-line">
-      <div class="mx-auto max-w-page px-4 py-20 sm:px-8">
-        <h2 id="ai-path-title" class="text-balance flex items-baseline gap-3 font-mono text-2xl font-bold"><span class="text-sm font-normal text-dim">05</span>Where your text goes</h2>
-        <pre class="mt-8 overflow-x-auto border border-line bg-surface p-5 font-mono text-xs leading-relaxed text-soft sm:text-sm"><span class="text-ink">your PC</span>                                           <span class="text-ink">your AI provider</span>
-┌───────────────────────────────┐   only when    ┌──────────────────────┐
-│ editor ── local server        │   you use AI   │ Gemini, OpenAI,      │
-│ accounts, documents, chats,   │ ─────────────> │ Claude, Groq, …      │
-│ your API key (encrypted)      │   your key     │ (the one you chose)  │
-└───────────────────────────────┘                └──────────────────────┘
-        nothing else leaves the PC: no account server, no tracking</pre>
-        <p class="mt-6 max-w-3xl leading-relaxed text-soft">
-          AI features need a key from an AI provider. <a href="https://aistudio.google.com/app/apikey" class="text-ink underline underline-offset-4">Google AI Studio</a>
-          gives a free Gemini key; free keys allow a few requests a minute. Paid keys from OpenAI, Anthropic and others
-          work the same way.
+    <section aria-labelledby="ai-path-title" class="border-b border-ink">
+      <div class="mx-auto max-w-page px-4 py-24 sm:px-8">
+        <div class="flex items-end gap-5">
+          <span class="font-outline text-6xl font-bold leading-none text-transparent [-webkit-text-stroke:1.5px_#fff] sm:text-8xl" aria-hidden="true">05</span>
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-dim">// privacy</p>
+            <h2 id="ai-path-title" class="mt-2 text-balance font-mono text-2xl font-bold sm:text-4xl">Where your text goes</h2>
+          </div>
+        </div>
+        <div class="mt-12 grid grid-cols-1 items-stretch gap-0 font-mono md:grid-cols-[1fr_auto_1fr]">
+          <div class="border border-ink p-6 shadow-hard">
+            <p class="text-xs uppercase tracking-[0.2em] text-dim">your PC</p>
+            <ul class="mt-4 space-y-2 text-sm">
+              <li>■ the editor and its local server</li>
+              <li>■ accounts and documents</li>
+              <li>■ chats</li>
+              <li>■ your API key, encrypted</li>
+            </ul>
+          </div>
+          <div class="flex flex-col items-center justify-center px-6 py-6 text-center text-xs text-soft">
+            <span class="hidden text-2xl text-ink md:block" aria-hidden="true">──→</span>
+            <span class="text-2xl text-ink md:hidden" aria-hidden="true">↓</span>
+            <span class="mt-2">only when you use AI,<br>with your key</span>
+          </div>
+          <div class="border border-ink bg-ink p-6 text-ground">
+            <p class="text-xs uppercase tracking-[0.2em]">your AI provider</p>
+            <p class="mt-4 text-sm font-bold">Gemini, OpenAI, Claude, Groq, …</p>
+            <p class="mt-2 text-sm text-[#333]">the one you chose</p>
+          </div>
+        </div>
+        <p class="mt-10 max-w-3xl leading-relaxed text-soft">
+          Nothing else leaves the PC: no account server, no tracking. AI features need a key from an AI provider.
+          <a href="https://aistudio.google.com/app/apikey" class="text-ink underline underline-offset-4">Google AI Studio</a>
+          gives a free Gemini key; free keys allow a few requests a minute.
         </p>
       </div>
     </section>
 
     <!-- 06 Install -->
-    <section id="install" aria-labelledby="install-title" class="border-b border-line">
-      <div class="mx-auto max-w-page px-4 py-20 sm:px-8">
-        <h2 id="install-title" class="text-balance flex items-baseline gap-3 font-mono text-2xl font-bold"><span class="text-sm font-normal text-dim">06</span>Install in four steps</h2>
-        <ol class="mt-10 grid grid-cols-1 border-l border-t border-line sm:grid-cols-2 lg:grid-cols-4">
-          <li class="border-b border-r border-line p-6">
-            <span class="font-mono text-xs text-dim">step 1</span>
-            <h3 class="mt-2 font-mono font-bold">Download</h3>
+    <section id="install" aria-labelledby="install-title" class="border-b border-ink">
+      <div class="mx-auto max-w-page px-4 py-24 sm:px-8">
+        <div class="flex items-end gap-5">
+          <span class="font-outline text-6xl font-bold leading-none text-transparent [-webkit-text-stroke:1.5px_#fff] sm:text-8xl" aria-hidden="true">06</span>
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-dim">// two minutes</p>
+            <h2 id="install-title" class="mt-2 text-balance font-mono text-2xl font-bold sm:text-4xl">Install in four steps</h2>
+          </div>
+        </div>
+        <ol class="mt-12 grid grid-cols-1 border-l border-t border-ink sm:grid-cols-2 lg:grid-cols-4">
+          <li class="border-b border-r border-ink p-6">
+            <span class="font-outline text-5xl font-bold leading-none text-transparent [-webkit-text-stroke:1px_#fff]" aria-hidden="true">1</span>
+            <h3 class="mt-6 font-mono font-bold">Download</h3>
             <p class="mt-2 text-sm leading-relaxed text-soft"><a href="https://github.com/himanshuhs9011/ai_document-editor/releases/download/latest1.0/AI-Document-Editor-Setup-1.0.0.exe" class="text-ink underline underline-offset-4">The installer</a> downloads straight away (158 MB).</p>
           </li>
-          <li class="border-b border-r border-line p-6">
-            <span class="font-mono text-xs text-dim">step 2</span>
-            <h3 class="mt-2 font-mono font-bold">Run it</h3>
-            <p class="mt-2 text-sm leading-relaxed text-soft">If Windows says “Windows protected your PC”, click <span class="text-ink">More info</span> → <span class="text-ink">Run anyway</span>. The app isn’t code-signed yet.</p>
+          <li class="border-b border-r border-ink p-6">
+            <span class="font-outline text-5xl font-bold leading-none text-transparent [-webkit-text-stroke:1px_#fff]" aria-hidden="true">2</span>
+            <h3 class="mt-6 font-mono font-bold">Run it</h3>
+            <p class="mt-2 text-sm leading-relaxed text-soft">If Windows says “Windows protected your PC”, click <b class="font-semibold text-ink">More info</b> → <b class="font-semibold text-ink">Run anyway</b>. The app isn’t code-signed yet.</p>
           </li>
-          <li class="border-b border-r border-line p-6">
-            <span class="font-mono text-xs text-dim">step 3</span>
-            <h3 class="mt-2 font-mono font-bold">Sign up</h3>
+          <li class="border-b border-r border-ink p-6">
+            <span class="font-outline text-5xl font-bold leading-none text-transparent [-webkit-text-stroke:1px_#fff]" aria-hidden="true">3</span>
+            <h3 class="mt-6 font-mono font-bold">Sign up</h3>
             <p class="mt-2 text-sm leading-relaxed text-soft">Open the app and create an account. It’s made on this PC; no internet needed.</p>
           </li>
-          <li class="border-b border-r border-line p-6">
-            <span class="font-mono text-xs text-dim">step 4</span>
-            <h3 class="mt-2 font-mono font-bold">Add an AI key</h3>
-            <p class="mt-2 text-sm leading-relaxed text-soft">Click <span class="text-ink">Add AI key</span> at the top, choose a provider, paste your key, <span class="text-ink">Test &amp; save key</span>.</p>
+          <li class="border-b border-r border-ink bg-ink p-6 text-ground">
+            <span class="font-outline text-5xl font-bold leading-none text-transparent [-webkit-text-stroke:1px_#000]" aria-hidden="true">4</span>
+            <h3 class="mt-6 font-mono font-bold">Add an AI key</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#333]">Click <b class="font-semibold text-ground">Add AI key</b> at the top, choose a provider, paste your key, <b class="font-semibold text-ground">Test &amp; save key</b>.</p>
           </li>
         </ol>
       </div>
     </section>
 
     <!-- 07 Your data -->
-    <section aria-labelledby="data-title" class="border-b border-line">
-      <div class="mx-auto max-w-page px-4 py-20 sm:px-8">
-        <h2 id="data-title" class="text-balance flex items-baseline gap-3 font-mono text-2xl font-bold"><span class="text-sm font-normal text-dim">07</span>Your data</h2>
-        <div class="mt-10 overflow-x-auto border border-line">
+    <section aria-labelledby="data-title" class="border-b border-ink">
+      <div class="mx-auto max-w-page px-4 py-24 sm:px-8">
+        <div class="flex items-end gap-5">
+          <span class="font-outline text-6xl font-bold leading-none text-transparent [-webkit-text-stroke:1.5px_#fff] sm:text-8xl" aria-hidden="true">07</span>
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-dim">// on disk</p>
+            <h2 id="data-title" class="mt-2 text-balance font-mono text-2xl font-bold sm:text-4xl">Your data</h2>
+          </div>
+        </div>
+        <div class="mt-12 overflow-x-auto border border-ink">
           <table class="w-full min-w-[34rem] text-left text-sm">
             <tbody class="divide-y divide-line text-soft">
-              <tr><th scope="row" class="w-40 px-4 py-3 font-mono font-normal text-dim">location</th><td class="px-4 py-3"><code class="text-ink">%APPDATA%\AI Document Editor</code> (paste into File Explorer’s address bar)</td></tr>
-              <tr><th scope="row" class="px-4 py-3 font-mono font-normal text-dim">holds</th><td class="px-4 py-3">accounts, documents, chats, encrypted API keys, logs</td></tr>
-              <tr><th scope="row" class="px-4 py-3 font-mono font-normal text-dim">back up</th><td class="px-4 py-3">close the app, copy the folder</td></tr>
-              <tr><th scope="row" class="px-4 py-3 font-mono font-normal text-dim">uninstall</th><td class="px-4 py-3">Windows Settings → Apps; the folder is kept until you delete it</td></tr>
-              <tr><th scope="row" class="px-4 py-3 font-mono font-normal text-dim">offline</th><td class="px-4 py-3">everything but AI works without internet</td></tr>
+              <tr><th scope="row" class="w-40 border-r border-ink bg-ink px-4 py-3.5 font-mono font-bold text-ground">location</th><td class="px-4 py-3.5"><code class="text-ink">%APPDATA%\AI Document Editor</code> (paste into File Explorer’s address bar)</td></tr>
+              <tr><th scope="row" class="border-r border-line px-4 py-3.5 font-mono font-normal text-dim">holds</th><td class="px-4 py-3.5">accounts, documents, chats, encrypted API keys, logs</td></tr>
+              <tr><th scope="row" class="border-r border-line px-4 py-3.5 font-mono font-normal text-dim">back up</th><td class="px-4 py-3.5">close the app, copy the folder</td></tr>
+              <tr><th scope="row" class="border-r border-line px-4 py-3.5 font-mono font-normal text-dim">uninstall</th><td class="px-4 py-3.5">Windows Settings → Apps; the folder is kept until you delete it</td></tr>
+              <tr><th scope="row" class="border-r border-line px-4 py-3.5 font-mono font-normal text-dim">offline</th><td class="px-4 py-3.5">everything but AI works without internet</td></tr>
             </tbody>
           </table>
         </div>
@@ -394,47 +518,54 @@ print(len(parts), answers)
     </section>
 
     <!-- 08 Questions -->
-    <section id="faq" aria-labelledby="faq-title" class="border-b border-line">
-      <div class="mx-auto max-w-page px-4 py-20 sm:px-8">
-        <h2 id="faq-title" class="text-balance flex items-baseline gap-3 font-mono text-2xl font-bold"><span class="text-sm font-normal text-dim">08</span>Questions</h2>
-        <div class="mt-8 divide-y divide-line border-y border-line">
-          <details class="group/q py-4">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-mono font-bold [&::-webkit-details-marker]:hidden after:font-normal after:text-dim after:content-['+'] group-open/q:after:content-['−']">Is it free?</summary>
-            <p class="mt-2 max-w-3xl leading-relaxed text-soft">Yes, and open source. AI usage is billed by your provider on your own key; Gemini’s free tier costs nothing.</p>
+    <section id="faq" aria-labelledby="faq-title" class="border-b border-ink">
+      <div class="mx-auto max-w-page px-4 py-24 sm:px-8">
+        <div class="flex items-end gap-5">
+          <span class="font-outline text-6xl font-bold leading-none text-transparent [-webkit-text-stroke:1.5px_#fff] sm:text-8xl" aria-hidden="true">08</span>
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-dim">// faq</p>
+            <h2 id="faq-title" class="mt-2 text-balance font-mono text-2xl font-bold sm:text-4xl">Questions</h2>
+          </div>
+        </div>
+        <div class="mt-12 space-y-3">
+          <details class="group/q border border-ink open:shadow-hard">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-mono font-bold hover:bg-raised [&::-webkit-details-marker]:hidden after:grid after:h-7 after:w-7 after:flex-none after:place-items-center after:border after:border-ink after:font-normal after:content-['+'] group-open/q:after:bg-ink group-open/q:after:text-ground group-open/q:after:content-['−']">Is it free?</summary>
+            <p class="border-t border-line px-5 py-4 leading-relaxed text-soft">Yes, and open source. AI usage is billed by your provider on your own key; Gemini’s free tier costs nothing.</p>
           </details>
-          <details class="group/q py-4">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-mono font-bold [&::-webkit-details-marker]:hidden after:font-normal after:text-dim after:content-['+'] group-open/q:after:content-['−']">AI says “quota exceeded”.</summary>
-            <p class="mt-2 max-w-3xl leading-relaxed text-soft">Free keys allow a few requests a minute. Wait a minute; Studio and deep read make several requests each, so heavy use suits a paid key.</p>
+          <details class="group/q border border-ink open:shadow-hard">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-mono font-bold hover:bg-raised [&::-webkit-details-marker]:hidden after:grid after:h-7 after:w-7 after:flex-none after:place-items-center after:border after:border-ink after:font-normal after:content-['+'] group-open/q:after:bg-ink group-open/q:after:text-ground group-open/q:after:content-['−']">AI says “quota exceeded”.</summary>
+            <p class="border-t border-line px-5 py-4 leading-relaxed text-soft">Free keys allow a few requests a minute. Wait a minute; Studio and deep read make several requests each, so heavy use suits a paid key.</p>
           </details>
-          <details class="group/q py-4">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-mono font-bold [&::-webkit-details-marker]:hidden after:font-normal after:text-dim after:content-['+'] group-open/q:after:content-['−']">Can I use my account on another PC?</summary>
-            <p class="mt-2 max-w-3xl leading-relaxed text-soft">Accounts belong to the PC they were made on. Copy the data folder to move your documents.</p>
+          <details class="group/q border border-ink open:shadow-hard">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-mono font-bold hover:bg-raised [&::-webkit-details-marker]:hidden after:grid after:h-7 after:w-7 after:flex-none after:place-items-center after:border after:border-ink after:font-normal after:content-['+'] group-open/q:after:bg-ink group-open/q:after:text-ground group-open/q:after:content-['−']">Can I use my account on another PC?</summary>
+            <p class="border-t border-line px-5 py-4 leading-relaxed text-soft">Accounts belong to the PC they were made on. Copy the data folder to move your documents.</p>
           </details>
-          <details class="group/q py-4">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-mono font-bold [&::-webkit-details-marker]:hidden after:font-normal after:text-dim after:content-['+'] group-open/q:after:content-['−']">Mac or Linux?</summary>
-            <p class="mt-2 max-w-3xl leading-relaxed text-soft">Not yet as an installer. The <a href="https://github.com/himanshuhs9011/ai_document-editor" class="text-ink underline underline-offset-4">source code</a> runs anywhere Python and Node.js do.</p>
+          <details class="group/q border border-ink open:shadow-hard">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-mono font-bold hover:bg-raised [&::-webkit-details-marker]:hidden after:grid after:h-7 after:w-7 after:flex-none after:place-items-center after:border after:border-ink after:font-normal after:content-['+'] group-open/q:after:bg-ink group-open/q:after:text-ground group-open/q:after:content-['−']">Mac or Linux?</summary>
+            <p class="border-t border-line px-5 py-4 leading-relaxed text-soft">Not yet as an installer. The <a href="https://github.com/himanshuhs9011/ai_document-editor" class="text-ink underline underline-offset-4">source code</a> runs anywhere Python and Node.js do.</p>
           </details>
-          <details class="group/q py-4">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-mono font-bold [&::-webkit-details-marker]:hidden after:font-normal after:text-dim after:content-['+'] group-open/q:after:content-['−']">Scanned PDFs?</summary>
-            <p class="mt-2 max-w-3xl leading-relaxed text-soft">Not yet in the Windows app: scanned pages import without text. PDFs with real text work.</p>
+          <details class="group/q border border-ink open:shadow-hard">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-mono font-bold hover:bg-raised [&::-webkit-details-marker]:hidden after:grid after:h-7 after:w-7 after:flex-none after:place-items-center after:border after:border-ink after:font-normal after:content-['+'] group-open/q:after:bg-ink group-open/q:after:text-ground group-open/q:after:content-['−']">Scanned PDFs?</summary>
+            <p class="border-t border-line px-5 py-4 leading-relaxed text-soft">Not yet in the Windows app: scanned pages import without text. PDFs with real text work.</p>
           </details>
         </div>
       </div>
     </section>
 
-    <!-- Start -->
-    <section aria-labelledby="start-title">
-      <div class="mx-auto max-w-page px-4 py-20 sm:px-8">
-        <h2 id="start-title" class="text-balance flex items-baseline gap-3 font-mono text-2xl font-bold"><span class="text-sm font-normal text-dim">09</span>Start writing</h2>
-        <div class="mt-8 flex flex-wrap gap-3 font-mono text-sm font-bold">
-          <a href="https://github.com/himanshuhs9011/ai_document-editor/releases/download/latest1.0/AI-Document-Editor-Setup-1.0.0.exe" class="bg-ink px-4 py-2.5 text-ground hover:bg-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink active:translate-y-px">Download for Windows</a>
-          <a href="https://github.com/himanshuhs9011/ai_document-editor" class="border border-line px-4 py-2.5 hover:bg-raised focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink active:translate-y-px">Source on GitHub</a>
+    <!-- Start (inverted: white) -->
+    <section aria-labelledby="start-title" class="bg-ink bg-dots bg-dots text-ground">
+      <div class="mx-auto max-w-page px-4 py-24 sm:px-8">
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-[#4d4d4d]">// 09 · ready?</p>
+        <h2 id="start-title" class="mt-4 text-balance font-mono text-5xl font-bold leading-none tracking-tight sm:text-7xl">Start writing.</h2>
+        <div class="mt-10 flex flex-wrap gap-4 font-mono text-sm font-bold">
+          <a href="https://github.com/himanshuhs9011/ai_document-editor/releases/download/latest1.0/AI-Document-Editor-Setup-1.0.0.exe" class="border border-ground bg-ground px-5 py-3 text-ink shadow-[6px_6px_0_0_#808080] transition hover:-translate-x-0.5 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ground active:translate-x-0 active:translate-y-0 active:shadow-none">↓ Download for Windows</a>
+          <a href="https://github.com/himanshuhs9011/ai_document-editor" class="border border-ground bg-ink px-5 py-3 transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-hard-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ground active:translate-x-0 active:translate-y-0 active:shadow-none">Source on GitHub</a>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="border-t border-line">
+  <footer class="border-t border-ink">
     <div class="mx-auto flex max-w-page flex-wrap items-center gap-x-6 gap-y-2 px-4 py-8 font-mono text-xs text-dim sm:px-8">
       <span>ai document editor 1.0.0 · windows</span>
       <a href="https://github.com/himanshuhs9011/ai_document-editor" class="ml-auto hover:text-ink">GitHub</a>
@@ -442,6 +573,7 @@ print(len(parts), answers)
       <a href="https://github.com/himanshuhs9011/ai_document-editor/releases" class="hover:text-ink">Releases</a>
       <a href="https://github.com/himanshuhs9011/ai_document-editor/issues" class="hover:text-ink">Issues</a>
     </div>
+    <p class="select-none overflow-hidden whitespace-nowrap px-4 pb-4 text-center font-outline text-[8vw] font-bold leading-none text-transparent [-webkit-text-stroke:1px_#2e2e2e] sm:px-8" aria-hidden="true">ai document editor</p>
   </footer>
 </body>
 </html>
