@@ -1,0 +1,13 @@
+{
+  "name": "ai-document-editor-site",
+  "private": true,
+  "description": "The download page for AI Document Editor, hosted on Cloudflare Pages",
+  "scripts": {
+    "build": "tailwindcss -c tailwind.config.js -i src/site.css -o public/assets/site.css --minify",
+    "deploy": "npm run build && wrangler pages deploy public --project-name ai-document-editor --branch main"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17",
+    "wrangler": "4.151.1"
+  }
+}
