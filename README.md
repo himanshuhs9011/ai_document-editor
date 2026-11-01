@@ -49,22 +49,42 @@ cd backend && python scripts/import_sqlite.py data/sessions.db
 
 ## 🖥️ Desktop app (Windows installer)
 
-`desktop/` wraps the website in a small Electron app so people can install it like any Windows program. It opens your
-deployed site in its own window, so app updates reach desktop users as soon as you deploy, with no new installer.
-Editing works for everyone who signs in; AI uses the same free daily allowance, own API key or Pro as the website.
+The Windows app keeps **documents, sessions and chats on the user's PC** (a database file in
+`%APPDATA%\AI Document Editor`). Only sign-in and AI go online, through the gateway. Editing works offline.
 
-1. Put your deployed site's address in `desktop/app.config.json` (use the `https://` address).
-2. `cd desktop && npm install && npm run dist`
-3. The installer and a portable `.exe` appear in `desktop/release/`.
+```
+Windows app (Electron)                                    Online (Cloud Run)
+  window ──> local backend (APP_MODE=local, SQLite)  ──>   gateway (APP_MODE=gateway, Postgres)
+             documents, sessions, chats, Studio,           accounts, plans, API keys, and one
+             deep read, upload and export                  AI endpoint that checks and counts
+                                                           every model call
+```
 
-To try it against your local dev server first: `cd desktop && npm start` (it opens `http://localhost:3000`). Run it from
-a normal terminal: VS Code's terminal sets `ELECTRON_RUN_AS_NODE`, which makes Electron start as plain Node.js.
+The same backend code runs in three modes (`APP_MODE`): `server` (everything on one server, the web version),
+`gateway` (online: accounts and AI only, no documents stored), and `local` (inside the Windows app).
 
-GitHub can build it for you: set the repository variable `APP_URL` (Settings → Secrets and variables → Actions →
-Variables), then push a tag like `v1.0.0`. `.github/workflows/desktop.yml` builds the installer and attaches it to a
-GitHub Release. The installer is unsigned, so Windows shows an "unknown publisher" warning until you add a code-signing
-certificate. The window is locked down: the page has no access to the computer, other sites open in the normal browser,
-and only your site may use the microphone and clipboard.
+Build the installer yourself (from the repo root):
+
+1. Package the backend: create a clean environment with only `requirements.txt` plus `pyinstaller==6.22.3`, then
+   `cd backend && python -m PyInstaller desktop_server.spec --noconfirm`
+2. Build the web app for the desktop: `cd frontend && npm run build:desktop`
+3. Put the gateway's `https://` address in `desktop/app.config.json` (`gatewayUrl`)
+4. `cd desktop && npm install && npm run dist` → the installer and a portable `.exe` appear in `desktop/release/`
+
+Or let GitHub build it: set the repository variable `GATEWAY_URL`, then push a tag like `v1.0.0`;
+`.github/workflows/desktop.yml` runs the tests, builds all three pieces and attaches the installer to a GitHub Release.
+
+How the app behaves:
+- It starts the backend in the background on a fixed local port (remembered in the data folder, so the sign-in
+  persists) and stops it when the app closes. Logs are in `%APPDATA%\AI Document Editor\logs`.
+- The backend only answers this PC (`127.0.0.1`, host names checked); the window has no access to the computer, other
+  sites open in the normal browser, and only the app may use the microphone and clipboard.
+- Offline: documents open and save as usual; AI and sign-in say they need an internet connection.
+- Scanned-PDF OCR needs Tesseract, which is not bundled; without it, scans import without text. Word export uses the
+  built-in converter.
+- The installer is unsigned, so Windows shows an "unknown publisher" warning until you add a code-signing certificate.
+- `npm start` in `desktop/` runs the app from source (after steps 1–2). Set `APP_URL` to open a running web version
+  instead. Run it from a normal terminal: VS Code's terminal sets `ELECTRON_RUN_AS_NODE`.
 
 ## 🌍 Deploying online
 

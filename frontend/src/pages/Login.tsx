@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { AuthShell, AuthField, AuthError, AuthSubmit } from './AuthShell';
+import { IS_DESKTOP_APP } from '../config/api';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -32,7 +33,9 @@ export default function Login() {
   return (
     <AuthShell
       title="Sign in to AI Document Editor"
-      lede="Your documents, chats and AI settings are saved to your account."
+      lede={IS_DESKTOP_APP
+        ? 'Your documents and chats stay on this PC. Your account is used for AI and your plan.'
+        : 'Your documents, chats and AI settings are saved to your account.'}
       footer={<>New here? <Link to="/register" onClick={clearError}>Create an account</Link></>}
     >
       <form onSubmit={handleSubmit} className="grid gap-4" noValidate>

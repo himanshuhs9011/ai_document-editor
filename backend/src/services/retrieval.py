@@ -74,6 +74,13 @@ class Retriever:
         self.llm = llm
         self.warned = False
 
+    class _NoEmbeddings(Exception):
+        """The desktop app has no embedding model of its own; search is keyword ranking there."""
+
+    def _require_embeddings(self) -> None:
+        if self.llm.embedding is None:
+            raise Retriever._NoEmbeddings()
+
     def _fallback_notice(self, error: Exception) -> None:
         # Once per process: the log should say why answers come from keyword search, not repeat it every request.
         if not self.warned:
@@ -93,12 +100,14 @@ class Retriever:
 
     async def search(self, query: str, document_id: str, limit: int = 4) -> List[VectorSearchResult]:
         try:
+            self._require_embeddings()
             if not await self._ensure_indexed(document_id):
                 return []
             [query_vector] = await self.llm.embed([query])
             found = await chunks.search(document_id, self.llm.embedding.model, query_vector, limit)
         except Exception as error:
-            self._fallback_notice(error)
+            if not isinstance(error, Retriever._NoEmbeddings):
+                self._fallback_notice(error)
             state = await documents.index_state(document_id)
             text = state["text"][:FALLBACK_TEXT_CHARS] if state and state["text"].strip() else ""
             ranked = await asyncio.to_thread(lambda: keyword_rank(query, list(enumerate(split_text(text))) if text else [], limit))
@@ -111,13 +120,15 @@ class Retriever:
         """Search several of the user's documents (all recent ones when none are given)."""
         ids = await documents.owned_ids(user_id, document_ids, MAX_DOCUMENTS)
         try:
+            self._require_embeddings()
             indexed = [document_id for document_id in ids if await self._ensure_indexed(document_id)]
             if not indexed:
                 return []
             [query_vector] = await self.llm.embed([query])
             found = await chunks.search_many(indexed, self.llm.embedding.model, query_vector, limit)
         except Exception as error:
-            self._fallback_notice(error)
+            if not isinstance(error, Retriever._NoEmbeddings):
+                self._fallback_notice(error)
             found = await self._keyword_many(query, ids, limit)
         return [item for item in found if item["score"] >= 0.1]
 

@@ -30,8 +30,24 @@ class ModelTarget:
     is_user_key: bool = False
 
 
+GATEWAY = "gateway"
+
+
 class LLMError(RuntimeError):
-    pass
+    def __init__(self, message: str, status: Optional[int] = None):
+        super().__init__(message)
+        self.status = status
+
+
+def _detail(body: str) -> Optional[str]:
+    """The user-facing message in one of our own API error bodies ({"detail": "..."} or {"detail": {"message": ...}})."""
+    try:
+        detail = json.loads(body).get("detail")
+    except (ValueError, AttributeError):
+        return None
+    if isinstance(detail, dict):
+        detail = detail.get("message")
+    return detail if isinstance(detail, str) else None
 
 
 class LLMService:
@@ -71,6 +87,9 @@ class LLMService:
         return {"Authorization": f"Bearer {target.api_key}"} if target.api_key else {}
 
     def _status_error(self, target: ModelTarget, status_code: int, body: str) -> LLMError:
+        if target.provider == GATEWAY:
+            # Our own gateway's messages (allowance used up, signed out) are written for the user.
+            return LLMError(_detail(body) or f"The AI service returned an error ({status_code}).", status_code)
         if status_code in (401, 403):
             return LLMError(f"{target.provider} rejected the API key.")
         if not target.is_user_key:
@@ -153,7 +172,12 @@ class LLMService:
                     data = line[5:].strip()
                     if data == "[DONE]":
                         return
-                    choices = json.loads(data).get("choices") or []
+                    chunk = json.loads(data)
+                    if chunk.get("error"):
+                        # Providers (and our gateway) report a failure part-way through as an error chunk.
+                        error = chunk["error"]
+                        raise LLMError(error.get("message", "The AI service failed.") if isinstance(error, dict) else str(error))
+                    choices = chunk.get("choices") or []
                     text = (choices[0].get("delta") or {}).get("content") if choices else None
                     if text:
                         yield text
@@ -175,6 +199,37 @@ class LLMService:
                 raise
             async for text in self._stream_once(target, self._chat_payload(target, self._messages(prompt, system_prompt), temperature, max_tokens, minimal=True)):
                 yield text
+
+    async def relay(self, target: ModelTarget, payload: dict) -> dict:
+        """The gateway's pass-through: one chat completion on the target, returned as the provider sent it."""
+        try:
+            return await self._post(target, "/chat/completions", payload)
+        except LLMError as error:
+            if not self._rejects_sampling(error):
+                raise
+            return await self._post(target, "/chat/completions",
+                                    {key: value for key, value in payload.items() if key not in ("temperature", "max_tokens")})
+
+    async def relay_stream(self, target: ModelTarget, payload: dict) -> AsyncIterator[str]:
+        """The gateway's streaming pass-through, re-sent as OpenAI-style server-sent events (errors as error chunks)."""
+        def event(body: dict) -> str:
+            return f"data: {json.dumps(body)}\n\n"
+
+        started = False
+        try:
+            try:
+                async for text in self._stream_once(target, payload):
+                    started = True
+                    yield event({"choices": [{"delta": {"content": text}}]})
+            except LLMError as error:
+                if started or not self._rejects_sampling(error):
+                    raise
+                minimal = {key: value for key, value in payload.items() if key not in ("temperature", "max_tokens")}
+                async for text in self._stream_once(target, minimal):
+                    yield event({"choices": [{"delta": {"content": text}}]})
+        except LLMError as error:
+            yield event({"error": {"message": str(error)}})
+        yield "data: [DONE]\n\n"
 
     async def embed(self, texts: List[str]) -> List[List[float]]:
         vectors: List[List[float]] = []

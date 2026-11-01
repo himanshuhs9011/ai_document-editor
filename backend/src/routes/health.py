@@ -21,6 +21,7 @@ async def health(services: Services = Depends(get_services)):
         "status": "healthy" if llm_ready and database == "healthy" else "degraded",
         "timestamp": datetime.now().isoformat(),
         "services": {"llm_service": "initialized" if llm_ready else "not initialized", "database": database},
-        "llm_status": await services.llm.health_check(),
-        "llm_details": {"provider": settings.llm_provider, "model": settings.llm_model, "is_ready": llm_ready},
+        # No live call to the model here: anyone can reach this endpoint, and the desktop app polls it while
+        # starting (a provider call would hang offline and could expose provider error text).
+        "mode": settings.app_mode,
     }

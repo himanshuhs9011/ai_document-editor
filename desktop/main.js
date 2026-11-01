@@ -1,19 +1,28 @@
-// The desktop app: a locked-down window onto the AI Document Editor website, so the installer never needs updating
-// for app changes. The page gets no Node.js access, cannot navigate to other sites, and only the app's own site
-// may use the microphone or clipboard.
+// The desktop app: starts the bundled backend on this PC (documents and chats live in the user's AppData folder),
+// then shows the app it serves in a locked-down window. Only sign-in and AI go online, through the gateway.
+//
+// Set APP_URL to open a running web version instead (development and tests); then no backend is started.
 const { app, BrowserWindow, session, shell } = require('electron');
+const { spawn } = require('child_process');
 const fs = require('fs');
+const http = require('http');
+const net = require('net');
 const path = require('path');
 
-// The site to open: APP_URL when set (for testing), otherwise app.config.json, set before building the installer.
-const configured = process.env.APP_URL
-  || JSON.parse(fs.readFileSync(path.join(__dirname, 'app.config.json'), 'utf8')).appUrl;
-const APP_URL = new URL(configured);
+const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'app.config.json'), 'utf8'));
 const ALLOWED_PERMISSIONS = new Set(['media', 'clipboard-read', 'clipboard-sanitized-write', 'fullscreen']);
+const STARTUP_TIMEOUT_MS = 60_000;
+
+// AIDOC_DATA_DIR keeps documents somewhere other than AppData (tests, or running from a USB stick).
+if (process.env.AIDOC_DATA_DIR) app.setPath('userData', process.env.AIDOC_DATA_DIR);
+
+let appOrigin = process.env.APP_URL ? new URL(process.env.APP_URL).origin : null;
+let backend = null;
+let quitting = false;
 
 const isAppPage = (url) => {
   try {
-    return new URL(url).origin === APP_URL.origin;
+    return appOrigin !== null && new URL(url).origin === appOrigin;
   } catch {
     return false;
   }
@@ -22,6 +31,108 @@ const isAppPage = (url) => {
 const openOutside = (url) => {
   if (/^https?:\/\//i.test(url)) shell.openExternal(url);
 };
+
+// Packaged: the backend and the web app ship in resources/. From source (npm start): the local build folders.
+const bundled = (packagedPath, sourcePath) =>
+  (app.isPackaged ? path.join(process.resourcesPath, packagedPath) : path.join(__dirname, '..', sourcePath));
+
+const freePort = () => new Promise((resolve, reject) => {
+  const probe = net.createServer();
+  probe.unref();
+  probe.on('error', reject);
+  probe.listen(0, '127.0.0.1', () => {
+    const { port } = probe.address();
+    probe.close(() => resolve(port));
+  });
+});
+
+const portFree = (port) => new Promise((resolve) => {
+  const probe = net.createServer();
+  probe.unref();
+  probe.on('error', () => resolve(false));
+  probe.listen(port, '127.0.0.1', () => probe.close(() => resolve(true)));
+});
+
+// The same port every time: the browser keeps sign-in and settings per address, so a new port each start would
+// sign the user out. A new one is chosen (and remembered) only when another program has taken it.
+async function appPort(data) {
+  const file = path.join(data, 'port.json');
+  let saved;
+  try {
+    saved = JSON.parse(fs.readFileSync(file, 'utf8')).port;
+  } catch {
+    saved = null;
+  }
+  if (Number.isInteger(saved) && saved > 1024 && await portFree(saved)) return saved;
+  const port = await freePort();
+  fs.writeFileSync(file, JSON.stringify({ port }));
+  return port;
+}
+
+const healthy = (port) => new Promise((resolve) => {
+  const request = http.get({ host: '127.0.0.1', port, path: '/api/health', timeout: 2000 }, (response) => {
+    response.resume();
+    resolve(response.statusCode === 200);
+  });
+  request.on('error', () => resolve(false));
+  request.on('timeout', () => { request.destroy(); resolve(false); });
+});
+
+async function startBackend() {
+  const executable = bundled(path.join('backend', 'desktop-server.exe'), path.join('backend', 'dist', 'desktop-server', 'desktop-server.exe'));
+  const webApp = bundled('web', path.join('frontend', 'dist-desktop'));
+  const data = app.getPath('userData');
+  fs.mkdirSync(path.join(data, 'logs'), { recursive: true });
+  const port = await appPort(data);
+  const log = fs.openSync(path.join(data, 'logs', 'backend.log'), 'a');
+  // Only what the backend needs: no inherited secrets, proxies or Python settings from the user's environment.
+  const env = {
+    SYSTEMROOT: process.env.SYSTEMROOT,
+    TEMP: process.env.TEMP,
+    TMP: process.env.TMP,
+    PORT: String(port),
+    DATABASE_URL: `sqlite:///${path.join(data, 'documents.db')}`,
+    GATEWAY_URL: config.gatewayUrl,
+    FRONTEND_DIR: webApp,
+    MAX_UPLOAD_MB: '20',
+  };
+  backend = spawn(executable, [], { env, cwd: data, windowsHide: true, stdio: ['ignore', log, log] });
+  backend.on('exit', () => { backend = null; });
+
+  const deadline = Date.now() + STARTUP_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    if (!backend) throw new Error('The document service stopped while starting.');
+    if (await healthy(port)) return `http://127.0.0.1:${port}`;
+    await new Promise((resolve) => setTimeout(resolve, 300));
+  }
+  throw new Error('The document service took too long to start.');
+}
+
+function stopBackend() {
+  if (backend && !backend.killed) backend.kill();
+  backend = null;
+}
+
+function showStatus(window, title, message, retry) {
+  window.loadFile(path.join(__dirname, 'status.html'), { query: { title, message, ...(retry ? { retry: '1' } : {}) } });
+}
+
+async function openApp(window) {
+  if (process.env.APP_URL) {
+    window.loadURL(process.env.APP_URL);
+    return;
+  }
+  showStatus(window, 'Starting AI Document Editor…', 'Opening your documents.');
+  try {
+    stopBackend();
+    const url = await startBackend();
+    appOrigin = new URL(url).origin;
+    window.loadURL(url);
+  } catch (error) {
+    stopBackend();
+    showStatus(window, "AI Document Editor couldn't start", `${error.message} Your documents are safe. Try again, or restart your PC if it keeps happening.`, true);
+  }
+}
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -38,11 +149,19 @@ function createWindow() {
   });
   window.once('ready-to-show', () => window.show());
 
-  // No connection or the site is down: a local page explains and offers to retry. -3 is a cancelled load, not a failure.
-  window.webContents.on('did-fail-load', (_event, code, _description, _url, isMainFrame) => {
-    if (isMainFrame && code !== -3) window.loadFile(path.join(__dirname, 'offline.html'), { query: { url: APP_URL.href } });
+  // The status page's Try again button sets #retry; nothing else on that page can reach the app.
+  window.webContents.on('did-navigate-in-page', (_event, url) => {
+    if (url.startsWith('file:') && url.endsWith('#retry')) openApp(window);
   });
-  window.loadURL(APP_URL.href);
+  window.webContents.on('did-fail-load', (_event, code, _description, url, isMainFrame) => {
+    if (!isMainFrame || code === -3 || url.startsWith('file:')) return;
+    if (process.env.APP_URL) {
+      showStatus(window, "Can't reach AI Document Editor", "Check that you're online, then try again.", true);
+    } else {
+      showStatus(window, 'The document service stopped', 'Your documents are safe. Try again to restart it.', true);
+    }
+  });
+  openApp(window);
 }
 
 // Every page the app opens: other sites go to the browser, never into the app window.
@@ -52,6 +171,7 @@ app.on('web-contents-created', (_event, contents) => {
     return { action: 'deny' };
   });
   contents.on('will-navigate', (event, url) => {
+    // The status page is opened directly (loadFile), so no navigation ever needs to reach a file: address.
     if (!isAppPage(url)) {
       event.preventDefault();
       openOutside(url);
@@ -82,7 +202,10 @@ if (!app.requestSingleInstanceLock()) {
     });
   });
 
+  app.on('before-quit', () => { quitting = true; });
+  app.on('will-quit', stopBackend);
   app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
+    stopBackend();
+    if (process.platform !== 'darwin' || quitting) app.quit();
   });
 }

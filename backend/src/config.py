@@ -20,8 +20,15 @@ PLACEHOLDER_SECRET = "CHANGE_ME_GENERATE_NEW_SECRET_KEY"
 load_dotenv(BACKEND_DIR / ".env")
 
 
+APP_MODES = ("server", "gateway", "local")
+
+
 @dataclass(frozen=True)
 class Settings:
+    # server: everything on one server (web version); gateway: online accounts + AI only; local: the desktop app.
+    app_mode: str
+    gateway_url: str
+    frontend_dir: Optional[str]
     database_url: str
     redis_url: Optional[str]
     secret_key: str
@@ -60,6 +67,11 @@ def _secret_key() -> str:
     key = _env("SECRET_KEY")
     if key and key != PLACEHOLDER_SECRET:
         return key
+    # Online, a random key would sign everyone out on every restart and lose access to stored API keys.
+    if _env("APP_MODE") == "gateway":
+        raise RuntimeError("SECRET_KEY must be set for the gateway (see backend/scripts/generate_secret_key.py)")
+    if _env("APP_MODE") == "local":
+        return secrets.token_urlsafe(32)  # the desktop app never signs tokens; the gateway does
     # A random key keeps tokens unforgeable; they just stop working after a restart.
     logger.warning("SECRET_KEY is not set; using a random key for this run")
     return secrets.token_urlsafe(32)
@@ -77,7 +89,13 @@ def load_settings() -> Settings:
     model_config = _read_model_config()
     ollama_url = model_config.get("model_settings", {}).get("base_url", "http://localhost:11434")
     secret_key = _secret_key()
+    app_mode = _env("APP_MODE", "server")
+    if app_mode not in APP_MODES:
+        raise ValueError(f"APP_MODE must be one of {', '.join(APP_MODES)}")
     return Settings(
+        app_mode=app_mode,
+        gateway_url=_env("GATEWAY_URL", "http://127.0.0.1:8765").rstrip("/"),
+        frontend_dir=_env("FRONTEND_DIR"),
         database_url=_env("DATABASE_URL", "postgresql://docai:docai@localhost:5432/docai"),
         redis_url=_env("REDIS_URL"),
         secret_key=secret_key,

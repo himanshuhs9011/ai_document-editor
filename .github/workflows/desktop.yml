@@ -1,6 +1,7 @@
-# Builds the Windows desktop installer. Push a tag like v1.0.0 to publish it on a GitHub Release, or run it by hand
-# from the Actions tab to get the installer as a downloadable artifact. Set the repository variable APP_URL
-# (Settings > Secrets and variables > Actions > Variables) to the deployed site the app should open.
+# Builds the Windows app: the backend packaged with PyInstaller, the web app's desktop build, and the installer.
+# Push a tag like v1.0.0 to publish it on a GitHub Release, or run it by hand from the Actions tab to get the
+# installer as a downloadable artifact. Set the repository variable GATEWAY_URL (Settings > Secrets and variables >
+# Actions > Variables) to the online gateway, e.g. https://<service>.run.app
 name: Desktop app
 
 on:
@@ -14,32 +15,58 @@ permissions:
 jobs:
   windows:
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: desktop
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check the gateway address is set
+        shell: bash
+        env:
+          GATEWAY_URL: ${{ vars.GATEWAY_URL }}
+        run: |
+          case "$GATEWAY_URL" in
+            https://*) ;;
+            *) echo "Set the repository variable GATEWAY_URL to the gateway's https:// address"; exit 1 ;;
+          esac
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Package the backend
+        working-directory: backend
+        run: |
+          python -m pip install -r ../requirements.txt "pyinstaller==6.22.3"
+          python -m unittest discover -s tests -t .
+          python -m PyInstaller desktop_server.spec --noconfirm
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: desktop/package-lock.json
-      - run: npm ci
-      - name: Point the app at the deployed site
+          cache-dependency-path: |
+            frontend/package-lock.json
+            desktop/package-lock.json
+      - name: Build the web app for the desktop
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build:desktop
+
+      - name: Build the installer
+        working-directory: desktop
         shell: bash
         env:
-          APP_URL: ${{ vars.APP_URL }}
-        run: |
-          if [ -z "$APP_URL" ]; then echo "Set the APP_URL repository variable first"; exit 1; fi
-          printf '{\n  "appUrl": "%s"\n}\n' "$APP_URL" > app.config.json
-      - run: npx electron-builder --win --publish never
-        env:
+          GATEWAY_URL: ${{ vars.GATEWAY_URL }}
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: |
+          npm ci
+          printf '{\n  "gatewayUrl": "%s"\n}\n' "$GATEWAY_URL" > app.config.json
+          npx electron-builder --win --publish never
+
       - uses: actions/upload-artifact@v4
         with:
           name: windows-installer
-          path: |
-            desktop/release/*.exe
+          path: desktop/release/*.exe
       - if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:

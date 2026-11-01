@@ -106,3 +106,6 @@ desktop/release/
 
 # Production secrets for deployment (filled in by hand, never committed)
 deploy/secrets.env
+
+# Desktop build of the web app (bundled into the Windows installer)
+frontend/dist-desktop/

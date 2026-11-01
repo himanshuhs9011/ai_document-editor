@@ -34,7 +34,10 @@ async def ai_target(user: UserResponse, llm: LLMService) -> ModelTarget:
 
 
 async def charge_extra(user: UserResponse, target: ModelTarget) -> bool:
-    """Count one more request for multi-step work (each report section); free when the user's own key pays."""
+    """Count one more request for multi-step work (each report section); free when the user's own key pays.
+    In the desktop app the gateway counts every call itself (and refuses once the allowance is used up)."""
+    if settings.app_mode == "local":
+        return True
     return target.is_user_key or await usage.consume(user.id, daily_limit(user))
 
 
