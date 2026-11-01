@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { AuthShell, AuthField, AuthError, AuthSubmit } from './AuthShell';
+import { IS_DESKTOP_APP } from '../config/api';
 
 // Mirrors the backend's UserCreate rules so most mistakes are caught before the request.
 const validate = (form: Record<string, string>): string => {
@@ -48,7 +49,9 @@ export default function Register() {
   return (
     <AuthShell
       title="Create your AI Document Editor account"
-      lede="Editing and export are free. Every account also gets free AI requests each day, or you can use your own API key with any provider."
+      lede={IS_DESKTOP_APP
+        ? 'Your account and documents are stored on this PC. AI features use your own API key, which you can add after signing up.'
+        : 'Editing and export are free. Every account also gets free AI requests each day, or you can use your own API key with any provider.'}
       footer={<>Already have an account? <Link to="/login" onClick={clearError}>Sign in</Link></>}
     >
       <form onSubmit={handleSubmit} className="grid gap-4" noValidate>

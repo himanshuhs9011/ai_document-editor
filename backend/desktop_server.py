@@ -5,8 +5,10 @@ The server only listens on this PC (127.0.0.1).
 """
 import os
 
-# Settings are read when the app is imported, so the mode is fixed first.
-os.environ["APP_MODE"] = "local"
+# Settings are read when the app is imported, so the mode is fixed first: standalone (no server) unless the app
+# was given an online gateway, in which case Electron passes APP_MODE=local.
+if os.environ.get("APP_MODE") not in ("local", "standalone"):
+    os.environ["APP_MODE"] = "standalone"
 
 import uvicorn  # noqa: E402
 

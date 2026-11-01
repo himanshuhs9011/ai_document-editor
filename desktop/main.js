@@ -1,9 +1,11 @@
-// The desktop app: starts the bundled backend on this PC (documents and chats live in the user's AppData folder),
-// then shows the app it serves in a locked-down window. Only sign-in and AI go online, through the gateway.
+// The desktop app: starts the bundled backend on this PC (accounts, documents and chats live in the user's AppData
+// folder), then shows the app it serves in a locked-down window. With no gatewayUrl in app.config.json it runs
+// standalone: AI uses each user's own API key. With a gatewayUrl, sign-in and AI go through that online gateway.
 //
 // Set APP_URL to open a running web version instead (development and tests); then no backend is started.
-const { app, BrowserWindow, session, shell } = require('electron');
+const { app, BrowserWindow, safeStorage, session, shell } = require('electron');
 const { spawn } = require('child_process');
+const crypto = require('crypto');
 const fs = require('fs');
 const http = require('http');
 const net = require('net');
@@ -69,6 +71,25 @@ async function appPort(data) {
   return port;
 }
 
+// The key that signs sign-ins and encrypts saved API keys, made once per Windows user and kept encrypted by Windows
+// (DPAPI via safeStorage). A new key every start would sign everyone out and lose their saved API keys.
+function appSecret(data) {
+  const file = path.join(data, 'secret.bin');
+  const protect = safeStorage.isEncryptionAvailable();
+  if (fs.existsSync(file)) {
+    try {
+      const stored = fs.readFileSync(file);
+      return protect ? safeStorage.decryptString(stored) : stored.toString('utf8');
+    } catch (error) {
+      // Unreadable (e.g. a copied profile): start over; documents stay, users sign in again and re-add API keys.
+      console.error('Could not read the app key; making a new one', error);
+    }
+  }
+  const secret = crypto.randomBytes(32).toString('base64url');
+  fs.writeFileSync(file, protect ? safeStorage.encryptString(secret) : Buffer.from(secret, 'utf8'));
+  return secret;
+}
+
 const healthy = (port) => new Promise((resolve) => {
   const request = http.get({ host: '127.0.0.1', port, path: '/api/health', timeout: 2000 }, (response) => {
     response.resume();
@@ -92,7 +113,9 @@ async function startBackend() {
     TMP: process.env.TMP,
     PORT: String(port),
     DATABASE_URL: `sqlite:///${path.join(data, 'documents.db')}`,
-    GATEWAY_URL: config.gatewayUrl,
+    ...(config.gatewayUrl
+      ? { APP_MODE: 'local', GATEWAY_URL: config.gatewayUrl }
+      : { APP_MODE: 'standalone', SECRET_KEY: appSecret(data) }),
     FRONTEND_DIR: webApp,
     MAX_UPLOAD_MB: '20',
   };

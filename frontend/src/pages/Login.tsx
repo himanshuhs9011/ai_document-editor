@@ -34,7 +34,7 @@ export default function Login() {
     <AuthShell
       title="Sign in to AI Document Editor"
       lede={IS_DESKTOP_APP
-        ? 'Your documents and chats stay on this PC. Your account is used for AI and your plan.'
+        ? 'Your account, documents and chats are stored on this PC.'
         : 'Your documents, chats and AI settings are saved to your account.'}
       footer={<>New here? <Link to="/register" onClick={clearError}>Create an account</Link></>}
     >

@@ -1,7 +1,8 @@
 # Builds the Windows app: the backend packaged with PyInstaller, the web app's desktop build, and the installer.
 # Push a tag like v1.0.0 to publish it on a GitHub Release, or run it by hand from the Actions tab to get the
-# installer as a downloadable artifact. Set the repository variable GATEWAY_URL (Settings > Secrets and variables >
-# Actions > Variables) to the online gateway, e.g. https://<service>.run.app
+# installer as a downloadable artifact. Without a GATEWAY_URL repository variable the app is standalone (accounts on
+# the PC, AI on each user's own API key). Set GATEWAY_URL (Settings > Secrets and variables > Actions > Variables) to
+# the online gateway, e.g. https://<service>.run.app, to sign in and reach AI through it instead.
 name: Desktop app
 
 on:
@@ -18,14 +19,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check the gateway address is set
+      - name: Check the gateway address (empty means standalone)
         shell: bash
         env:
           GATEWAY_URL: ${{ vars.GATEWAY_URL }}
         run: |
           case "$GATEWAY_URL" in
-            https://*) ;;
-            *) echo "Set the repository variable GATEWAY_URL to the gateway's https:// address"; exit 1 ;;
+            "") echo "No GATEWAY_URL: building the standalone app" ;;
+            https://*) echo "Building the app for the gateway at $GATEWAY_URL" ;;
+            *) echo "GATEWAY_URL must be an https:// address"; exit 1 ;;
           esac
 
       - uses: actions/setup-python@v5

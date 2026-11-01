@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { KeyRound } from 'lucide-react';
 import { apiJson, AI_USED_EVENT, PAYWALL_EVENT } from '../services/http';
 import type { Billing } from '../types/billing';
+import { IS_DESKTOP_APP } from '../config/api';
 
 const describe = (billing: Billing | null): { text: string; detail: string; warn: boolean } => {
   if (!billing) return { text: 'AI setup', detail: 'AI model, your API keys and plan', warn: false };
@@ -9,7 +10,11 @@ const describe = (billing: Billing | null): { text: string; detail: string; warn
     return { text: 'Your key', detail: `AI runs on your key: ${billing.active_model}. No daily limit.`, warn: false };
   }
   if (!billing.server_ai_ready) {
-    return { text: 'Add AI key', detail: 'This server has no AI model set up. Add your own API key to use AI.', warn: true };
+    return {
+      text: 'Add AI key',
+      detail: IS_DESKTOP_APP ? 'AI runs on your own API key. Add one in AI & Plan.' : 'This server has no AI model set up. Add your own API key to use AI.',
+      warn: true,
+    };
   }
   const left = Math.max(0, billing.ai_daily_limit - billing.ai_used_today);
   if (left === 0) {

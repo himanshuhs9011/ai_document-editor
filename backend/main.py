@@ -4,6 +4,8 @@ APP_MODE decides what this process is:
 - server:  everything on one server (the web version).
 - gateway: online accounts, plans, API keys and the AI gateway; no documents are stored here.
 - local:   the desktop app on the user's PC: documents, sessions and chats in a local file, AI through the gateway.
+- standalone: the desktop app with no server at all: accounts, keys and documents in the local file; AI runs on
+  each user's own API key.
 """
 import logging
 from contextlib import asynccontextmanager
@@ -23,10 +25,12 @@ from src.routes.frontend import mount_frontend
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
 LOCAL = settings.app_mode == "local"
+DESKTOP = settings.app_mode in ("local", "standalone")
 ROUTES = {
     "server": (auth, chat, ai, studio, documents, sessions, keys, billing, health),
     "gateway": (auth, keys, billing, gateway, health),
     "local": (account_proxy, chat, ai, studio, documents, sessions, health),
+    "standalone": (auth, chat, ai, studio, documents, sessions, keys, billing, health),
 }
 
 
@@ -37,8 +41,8 @@ async def lifespan(app: FastAPI):
     services = build_services()
     if LOCAL:
         services.llm.is_initialized = True  # the gateway decides whether AI is available
-    else:
-        await services.llm.initialize()
+    elif settings.app_mode != "standalone":
+        await services.llm.initialize()  # standalone has no model of its own: AI runs on users' keys
     app.state.services = services
     yield
     await services.llm.close()
@@ -50,7 +54,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Document AI Editor", version="2.0.0", lifespan=lifespan)
 
-if LOCAL:
+if DESKTOP:
     # Only this PC may call the desktop app's server; a web page using DNS tricks to reach it is turned away.
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost"])
 
@@ -65,7 +69,7 @@ app.add_middleware(
 for module in ROUTES[settings.app_mode]:
     app.include_router(module.router)
 
-if LOCAL and settings.frontend_dir:
+if DESKTOP and settings.frontend_dir:
     mount_frontend(app, settings.frontend_dir)
 
 

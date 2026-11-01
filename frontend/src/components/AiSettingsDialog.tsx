@@ -4,6 +4,7 @@ import { KeyRound, Loader2, Trash2, X } from 'lucide-react';
 import { apiFetch, apiJson, PAYWALL_EVENT } from '../services/http';
 import { useAppStore } from '../stores/simpleStore';
 import type { Billing } from '../types/billing';
+import { IS_DESKTOP_APP } from '../config/api';
 
 /** AI settings: plan and usage, plus bring-your-own-key for any OpenAI-compatible provider. */
 
@@ -106,7 +107,9 @@ const AiSettingsDialog: React.FC<{ open: boolean; onOpen: () => void; onClose: (
             {billing.using_own_key ? (
               <p className={`mt-1 text-sm ${muted}`}>Using your own key ({billing.active_model}). No daily limit.</p>
             ) : !billing.server_ai_ready ? (
-              <p className={`mt-1 text-sm ${muted}`}>This server has no AI model of its own set up. Add your API key below to use the AI features.</p>
+              <p className={`mt-1 text-sm ${muted}`}>{IS_DESKTOP_APP
+                ? 'AI runs on your own API key. Add one below; Google Gemini has a free tier.'
+                : 'This server has no AI model of its own set up. Add your API key below to use the AI features.'}</p>
             ) : (
               <>
                 <p className={`mt-1 text-sm ${muted}`}>{billing.ai_used_today} of {billing.ai_daily_limit} AI requests used today.</p>

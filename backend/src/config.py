@@ -20,12 +20,14 @@ PLACEHOLDER_SECRET = "CHANGE_ME_GENERATE_NEW_SECRET_KEY"
 load_dotenv(BACKEND_DIR / ".env")
 
 
-APP_MODES = ("server", "gateway", "local")
+APP_MODES = ("server", "gateway", "local", "standalone")
 
 
 @dataclass(frozen=True)
 class Settings:
-    # server: everything on one server (web version); gateway: online accounts + AI only; local: the desktop app.
+    # server: everything on one server (web version); gateway: online accounts + AI only;
+    # local: the desktop app with accounts online (via the gateway); standalone: the desktop app with no server,
+    # accounts on the PC and AI on each user's own API key.
     app_mode: str
     gateway_url: str
     frontend_dir: Optional[str]

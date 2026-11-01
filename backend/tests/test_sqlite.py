@@ -66,6 +66,43 @@ class SQLiteStorage(unittest.TestCase):
             self.assertEqual([s["name"] for s in await sessions.list_for_user("user-1")], ["Renamed"])
         asyncio.run(scenario())
 
+    def test_accounts_keys_and_usage(self):
+        from datetime import timedelta, timezone
+
+        from src.db import api_keys, usage, users
+
+        async def scenario():
+            created = await users.insert("u1", "a@example.com", "alice", None, "hash")
+            self.assertIs(created["is_active"], True)
+            self.assertEqual(created["plan"], "free")
+            self.assertEqual((await users.get_by_email("a@example.com"))["id"], "u1")
+            self.assertEqual(await users.find_conflict("a@example.com", "x"), "email")
+            self.assertEqual(await users.find_conflict("b@example.com", "alice"), "username")
+            self.assertIsNone(await users.find_conflict("b@example.com", "bob"))
+            expires = datetime.now(timezone.utc) + timedelta(days=30)
+            await users.set_plan("u1", "pro", expires)
+            stored = await users.get_by_id("u1")
+            self.assertEqual(stored["plan"], "pro")
+            self.assertLess(abs((stored["plan_expires_at"] - expires).total_seconds()), 1)
+
+            first = await api_keys.upsert_active("u1", "gemini", "m1", None, "enc-1", "…1111")
+            second = await api_keys.upsert_active("u1", "openai", "m2", None, "enc-2", "…2222")
+            listed = {k["provider"]: k["is_active"] for k in await api_keys.list_for_user("u1")}
+            self.assertEqual(listed, {"gemini": False, "openai": True}, "only the newest key is in use")
+            again = await api_keys.upsert_active("u1", "gemini", "m3", None, "enc-3", "…3333")
+            self.assertEqual(again["id"], first["id"], "saving a provider again updates its key")
+            self.assertEqual((await api_keys.get_active("u1"))["encrypted_key"], "enc-3")
+            self.assertTrue(await api_keys.set_active(second["id"], "u1", True))
+            self.assertEqual((await api_keys.get_active("u1"))["provider"], "openai")
+            self.assertFalse(await api_keys.delete(second["id"], "someone-else"))
+            self.assertTrue(await api_keys.delete(second["id"], "u1"))
+
+            self.assertTrue(await usage.consume("u1", 2))
+            self.assertTrue(await usage.consume("u1", 2))
+            self.assertFalse(await usage.consume("u1", 2), "the daily limit stops the third request")
+            self.assertEqual(await usage.used_today("u1"), 2)
+        asyncio.run(scenario())
+
     def test_timestamps_have_milliseconds(self):
         async def scenario():
             session = await sessions.create("Order", "u")

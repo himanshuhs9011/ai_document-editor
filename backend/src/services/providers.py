@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 PROVIDERS = {
     "openai": {"label": "OpenAI", "base_url": "https://api.openai.com/v1", "example_model": "gpt-4o-mini"},
     "anthropic": {"label": "Anthropic (Claude)", "base_url": "https://api.anthropic.com/v1", "example_model": "claude-sonnet-4-5"},
-    "gemini": {"label": "Google Gemini", "base_url": "https://generativelanguage.googleapis.com/v1beta/openai", "example_model": "gemini-2.5-flash"},
+    "gemini": {"label": "Google Gemini", "base_url": "https://generativelanguage.googleapis.com/v1beta/openai", "example_model": "gemini-3.5-flash"},
     "groq": {"label": "Groq", "base_url": "https://api.groq.com/openai/v1", "example_model": "llama-3.3-70b-versatile"},
     "mistral": {"label": "Mistral", "base_url": "https://api.mistral.ai/v1", "example_model": "mistral-small-latest"},
     "deepseek": {"label": "DeepSeek", "base_url": "https://api.deepseek.com/v1", "example_model": "deepseek-chat"},

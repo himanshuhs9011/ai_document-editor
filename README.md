@@ -50,7 +50,14 @@ cd backend && python scripts/import_sqlite.py data/sessions.db
 ## 🖥️ Desktop app (Windows installer)
 
 The Windows app keeps **documents, sessions and chats on the user's PC** (a database file in
-`%APPDATA%\AI Document Editor`). Only sign-in and AI go online, through the gateway. Editing works offline.
+`%APPDATA%\AI Document Editor`). It runs in one of two ways, set by `gatewayUrl` in `desktop/app.config.json`:
+
+- **Standalone** (`gatewayUrl` empty, the default): no server at all. Accounts are created and signed in on the PC,
+  and AI runs on each user's own API key (added in **AI & Plan**; Google Gemini has a free tier). The app makes its
+  own sign-in/encryption key on first start and keeps it encrypted by Windows, so sign-ins and saved keys survive
+  restarts. Accounts belong to that PC.
+- **With the online gateway** (`gatewayUrl` set): accounts, plans and the free daily AI allowance live online; only
+  sign-in and AI go there. Editing works offline.
 
 ```
 Windows app (Electron)                                    Online (Cloud Run)
@@ -60,18 +67,21 @@ Windows app (Electron)                                    Online (Cloud Run)
                                                            every model call
 ```
 
-The same backend code runs in three modes (`APP_MODE`): `server` (everything on one server, the web version),
-`gateway` (online: accounts and AI only, no documents stored), and `local` (inside the Windows app).
+The same backend code runs in four modes (`APP_MODE`): `server` (everything on one server, the web version),
+`gateway` (online: accounts and AI only, no documents stored), `local` (inside the Windows app, using the gateway) and
+`standalone` (inside the Windows app, no server).
 
 Build the installer yourself (from the repo root):
 
 1. Package the backend: create a clean environment with only `requirements.txt` plus `pyinstaller==6.22.3`, then
    `cd backend && python -m PyInstaller desktop_server.spec --noconfirm`
 2. Build the web app for the desktop: `cd frontend && npm run build:desktop`
-3. Put the gateway's `https://` address in `desktop/app.config.json` (`gatewayUrl`)
+3. Leave `gatewayUrl` empty in `desktop/app.config.json` for the standalone app, or put the gateway's `https://`
+   address there
 4. `cd desktop && npm install && npm run dist` → the installer and a portable `.exe` appear in `desktop/release/`
 
-Or let GitHub build it: set the repository variable `GATEWAY_URL`, then push a tag like `v1.0.0`;
+Or let GitHub build it: push a tag like `v1.0.0` (set the repository variable `GATEWAY_URL` first for the gateway
+version);
 `.github/workflows/desktop.yml` runs the tests, builds all three pieces and attaches the installer to a GitHub Release.
 
 How the app behaves:
@@ -79,7 +89,8 @@ How the app behaves:
   persists) and stops it when the app closes. Logs are in `%APPDATA%\AI Document Editor\logs`.
 - The backend only answers this PC (`127.0.0.1`, host names checked); the window has no access to the computer, other
   sites open in the normal browser, and only the app may use the microphone and clipboard.
-- Offline: documents open and save as usual; AI and sign-in say they need an internet connection.
+- Offline: documents open and save as usual. AI needs an internet connection (and, with the gateway, so does
+  signing in).
 - Scanned-PDF OCR needs Tesseract, which is not bundled; without it, scans import without text. Word export uses the
   built-in converter.
 - The installer is unsigned, so Windows shows an "unknown publisher" warning until you add a code-signing certificate.

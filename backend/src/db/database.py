@@ -26,6 +26,7 @@ SQLITE_PREFIX = "sqlite:///"
 SQLITE_SCHEMA = Path(__file__).with_name("sqlite_schema.sql")
 SQLITE_NOW = "strftime('%Y-%m-%d %H:%M:%f', 'now')"
 JSON_COLUMNS = frozenset({"metadata"})
+BOOL_COLUMNS = frozenset({"is_active"})  # SQLite stores booleans as 0/1
 
 _ANY = re.compile(r"=\s*ANY\(\$(\d+)::text\[\]\)")
 _LEFT = re.compile(r"\bleft\(([^,()]+),\s*")
@@ -64,6 +65,8 @@ def _row(row: sqlite3.Row) -> dict:
             value = parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
         elif isinstance(value, str) and key in JSON_COLUMNS:
             value = json.loads(value or "{}")
+        elif key in BOOL_COLUMNS and value is not None:
+            value = bool(value)
         record[key] = value
     return record
 
@@ -139,6 +142,12 @@ class _SQLiteConnection:
 
     async def fetch(self, query: str, *args: Any) -> List[dict]:
         return await self.database.run(query, args, "fetch", locked=True)
+
+    async def fetchrow(self, query: str, *args: Any) -> Optional[dict]:
+        return await self.database.run(query, args, "fetchrow", locked=True)
+
+    async def fetchval(self, query: str, *args: Any) -> Any:
+        return await self.database.run(query, args, "fetchval", locked=True)
 
 
 async def _init_connection(connection: asyncpg.Connection) -> None:

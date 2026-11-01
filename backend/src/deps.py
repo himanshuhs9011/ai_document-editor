@@ -15,7 +15,7 @@ from .agents.harness.engine import Harness
 from .config import settings
 from .db import sessions
 from .models.user import UserResponse
-from .services import auth, billing
+from .services import auth, billing, keys
 from .services.chat import ChatService
 from .services.gateway_client import GatewayClient, GatewayUnavailable
 from .services.inline import InlineService
@@ -50,6 +50,10 @@ def build_services() -> Services:
         default = ModelTarget(GATEWAY, "server", f"{settings.gateway_url}/gateway/v1")
         embedding = None
         gateway = GatewayClient(settings.gateway_url)
+    elif settings.app_mode == "standalone":
+        # No server model and no embeddings: AI runs on each user's own key, search is keyword ranking.
+        default = ModelTarget("none", "none", "http://127.0.0.1:9")
+        embedding = None
     else:
         default = ModelTarget(settings.llm_provider, settings.llm_model, settings.llm_base_url, settings.llm_api_key)
         embedding = ModelTarget(settings.embedding_provider, settings.embedding_model,
@@ -131,6 +135,17 @@ async def _gateway_target(token: str, services: Services, premium: bool) -> Mode
     return ModelTarget(GATEWAY, "server", f"{settings.gateway_url}/gateway/v1", token)
 
 
+async def _own_key_target(user: UserResponse) -> ModelTarget:
+    """Standalone desktop app: AI runs on the user's own key; without one, AI & Plan opens to add it."""
+    own = await keys.active_target(user.id)
+    if own:
+        return own
+    raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail={
+        "code": "key_required",
+        "message": "AI runs on your own API key. Add one below (Google Gemini has a free tier), then try again.",
+    })
+
+
 async def ai_target(user: UserResponse = Depends(get_current_user), services: Services = Depends(get_services),
                     credentials: HTTPAuthorizationCredentials = Depends(bearer)) -> ModelTarget:
     """The model this AI request runs on; enforces the rate limit and the paywall."""
@@ -138,6 +153,8 @@ async def ai_target(user: UserResponse = Depends(get_current_user), services: Se
         raise HTTPException(status_code=429, detail="Too many AI requests. Please wait a minute.")
     if settings.app_mode == "local":
         return await _gateway_target(_token(credentials), services, premium=False)
+    if settings.app_mode == "standalone":
+        return await _own_key_target(user)
     return await billing.ai_target(user, services.llm)
 
 
@@ -148,6 +165,8 @@ async def premium_target(user: UserResponse = Depends(get_current_user), service
         raise HTTPException(status_code=429, detail="Too many autocomplete requests.")
     if settings.app_mode == "local":
         return await _gateway_target(_token(credentials), services, premium=True)
+    if settings.app_mode == "standalone":
+        return await _own_key_target(user)
     return await billing.premium_target(user, services.llm)
 
 
