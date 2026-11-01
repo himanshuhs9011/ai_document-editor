@@ -2,7 +2,7 @@
 import asyncio
 import unittest
 
-from src.agents.rlm.engine import Corpus, Limits, RecursiveReader, final_answer
+from src.agents.rlm.engine import Corpus, Limits, RecursiveReader, extract_code, final_answer
 from src.agents.rlm.sandbox import Sandbox
 from src.models.schemas import LLMResponse
 
@@ -221,6 +221,31 @@ class ReaderLoop(unittest.TestCase):
         events = asyncio.run(collect(RecursiveReader(llm), "q", Corpus([("a", self.LONG)]), always))
         self.assertIn("only 24 are left", events[0]["data"]["output"])
         self.assertEqual(llm.helper_prompts, [])
+
+    def test_final_called_in_code_ends_the_run(self):
+        llm = FakeLLM(["```repl\nhits = grep('deadline')\nFINAL(hits[0])\n```\n```repl\nprint('never runs')\n```"])
+        events = asyncio.run(collect(RecursiveReader(llm), "When?", Corpus([("a", self.LONG)]), always))
+        self.assertEqual(len(events), 2)
+        self.assertIn("The filing deadline is 5 May.", events[-1]["data"]["answer"])
+        self.assertEqual(events[-1]["data"]["steps"], 1)
+
+    def test_counting_with_code_like_the_notebook(self):
+        people = "\n".join(f"Name: P{i} | Role: {'engineer' if i % 3 == 0 else 'designer'} | City: "
+                           f"{'Tokyo' if i % 2 == 0 else 'Osaka'}" for i in range(3000))
+        truth = sum(1 for i in range(3000) if i % 3 == 0 and i % 2 == 0)
+        llm = FakeLLM([
+            "```repl\nprint(len(context))\nprint(context[:120])\n```",
+            "```repl\nrows = [l for l in context.splitlines() if 'Role: engineer' in l and 'City: Tokyo' in l]\n"
+            "FINAL(len(rows))\n```",
+        ])
+        events = asyncio.run(collect(RecursiveReader(llm), "How many engineers are in Tokyo?",
+                                     Corpus([("people.txt", people)]), always))
+        self.assertEqual(events[-1]["data"]["answer"], str(truth))
+        self.assertEqual(events[-1]["data"]["sub_calls"], 0)
+
+    def test_prose_is_never_run_as_code(self):
+        self.assertEqual(extract_code("print(context) looks like code but is prose"), [])
+        self.assertEqual(extract_code("```python\nx = 1\n```"), ["x = 1\n"])
 
     def test_final_ignores_code_and_reads_nested_parentheses(self):
         sandbox = Sandbox({}, {}, {})
