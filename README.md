@@ -8,6 +8,9 @@ An AI-powered document editor: a Word-style editor with an AI assistant that wri
 
 ## ⬇️ Download and install (Windows)
 
+**Website:** https://ai-document-editor-site.raglib-site.workers.dev (download button and install guide).
+Its source is in `site/`: edit `site/public/index.html`, then `cd site && npm install && npm run deploy`.
+
 **Download:** go to the **[latest release](https://github.com/himanshuhs9011/ai_document-editor/releases/latest)**
 and, under **Assets**, download one of:
 
