@@ -6,6 +6,63 @@ An AI-powered document editor: a Word-style editor with an AI assistant that wri
 
 ---
 
+## ⬇️ Download and install (Windows)
+
+**Download:** go to the **[latest release](https://github.com/himanshuhs9011/ai_document-editor/releases/latest)**
+and, under **Assets**, download one of:
+
+| File | What it is |
+|------|------------|
+| `AI-Document-Editor-Setup-1.0.0.exe` | The installer (recommended): adds the app to the Start menu and the desktop |
+| `AI-Document-Editor-1.0.0-portable.exe` | A single file that runs without installing (starts a little slower) |
+
+You need Windows 10 or 11 (64-bit) and about 500 MB of free disk space. No other software is needed.
+
+### Install
+
+1. Double-click `AI-Document-Editor-Setup-1.0.0.exe`.
+2. If Windows shows **"Windows protected your PC"**, click **More info** → **Run anyway**. (The app is not yet
+   code-signed, so Windows doesn't recognise the publisher.)
+3. Choose whether to install for just you or everyone on the PC, pick a folder if you like, and click **Install**.
+4. Open **AI Document Editor** from the desktop shortcut or the Start menu.
+
+### First start
+
+1. Click **Create an account** and sign up. Your account is created **on this PC**: no internet needed, and nothing
+   is sent anywhere.
+2. Sign in, and start writing. Upload Word, PDF or text files with **File → Open a file**, and save as Word with
+   **File → Download as Word**. Everything is saved automatically.
+
+### Turn on AI
+
+AI features (chat, `/` commands, Studio, deep read, autocomplete) use **your own API key**:
+
+1. Get a key, for example a free one from **[Google AI Studio](https://aistudio.google.com/app/apikey)** (Gemini),
+   or from OpenAI, Anthropic, Groq, Mistral, DeepSeek, OpenRouter, xAI or Together.
+2. In the app, click the **key button** at the top (**AI & Plan**), choose your provider, check the model name,
+   paste the key and click **Test & save key**.
+3. That's it: AI now runs on your key. The key is stored encrypted on your PC and never leaves it except to talk to
+   your provider. Free keys have per-minute limits; if you see "quota exceeded", wait a minute.
+
+AI needs an internet connection; everything else works offline.
+
+### Your data
+
+- Everything (accounts, documents, chats, saved keys) is in **`%APPDATA%\AI Document Editor`** (paste that into the
+  File Explorer address bar to open it).
+- **Back up** by copying that whole folder while the app is closed. Restoring it on another PC brings your documents
+  back; you may need to sign in and add your API key again there.
+- **Uninstall** from Windows **Settings → Apps**. Your data folder is kept; delete it yourself to remove everything.
+
+### If something goes wrong
+
+- **"AI Document Editor couldn't start"**: click **Try again**. If it keeps happening, restart your PC. The details
+  are in `%APPDATA%\AI Document Editor\logs\backend.log`.
+- **AI says to add a key**: open **AI & Plan** and add one (see above).
+- **Scanned PDFs import without text**: reading text from images (OCR) isn't included in the Windows app yet.
+
+---
+
 ## ✨ Features
 
 - 📝 **Word-style Home ribbon**: clipboard and Format Painter; fonts, sizes, grow/shrink, change case, sub/superscript, highlight and font color; bullets, numbering styles, indent, sort, line spacing, shading, paragraph marks; style gallery; Find & Replace; select sentence/paragraph; dictation; spell check
