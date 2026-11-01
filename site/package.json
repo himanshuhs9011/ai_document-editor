@@ -1,14 +1,12 @@
 {
   "name": "ai-document-editor-site",
   "private": true,
-  "description": "The download page for AI Document Editor, served by Cloudflare (static assets, see wrangler.jsonc)",
+  "description": "The download page for AI Document Editor: plain HTML, CSS and JS in public/, served by Cloudflare Workers static assets (see wrangler.jsonc)",
   "scripts": {
-    "build": "tailwindcss -c tailwind.config.js -i src/site.css -o public/assets/site.css --minify",
-    "deploy": "npm run build && wrangler deploy",
-    "preview": "npm run build && wrangler dev"
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "devDependencies": {
-    "tailwindcss": "3.4.17",
     "wrangler": "4.151.1"
   }
 }

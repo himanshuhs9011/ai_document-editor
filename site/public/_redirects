@@ -1,0 +1,3 @@
+# Short download links: the .exe files are too big for Workers assets, so they are served from the GitHub release.
+/download           https://github.com/himanshuhs9011/ai_document-editor/releases/download/latest1.0/AI-Document-Editor-Setup-1.0.0.exe 302
+/download/portable  https://github.com/himanshuhs9011/ai_document-editor/releases/download/latest1.0/AI-Document-Editor-1.0.0-portable.exe 302
